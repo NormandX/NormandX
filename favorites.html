@@ -2,44 +2,50 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Favoris</title>
+<title>Favoris - NormandX</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-  <div class="logo" onclick="location.href='home.html'">
-    <span>Normand</span><span>X</span>
-  </div>
+  <div class="back-btn" onclick="location.href='home.html'">←</div>
+  <h2>Favoris</h2>
 </header>
 
 <main>
-  <div class="back" onclick="history.back()">← Retour</div>
-  <h2>Mes favoris</h2>
   <div class="grid" id="grid"></div>
 </main>
 
 <script>
 const user = localStorage.getItem("connected");
-if (!user) location.href = "auth.html";
+if(!user) location.href="auth.html";
 
-const favs = JSON.parse(localStorage.getItem("fav_" + user) || "[]");
 const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+const favs = JSON.parse(localStorage.getItem("fav_"+user) || "[]");
+
 const grid = document.getElementById("grid");
 
-videos
-  .filter(v => favs.includes(v.id))
-  .forEach(v => {
-    grid.innerHTML += `
-      <div class="card">
-        <img src="${v.i}" onclick="location.href='video.html?id=${v.id}'">
-        <p>${v.t}</p>
-      </div>
-    `;
-  });
+const list = videos.filter(v => favs.includes(v.id));
+
+if(list.length === 0){
+  grid.innerHTML = "<p style='opacity:.6'>Aucun favori</p>";
+}
+
+list.forEach(v=>{
+  grid.innerHTML += `
+  <div class="card" onclick="location.href='video.html?id=${v.id}'">
+    <div class="thumb">
+      <img src="${v.poster}">
+      <span class="duration">${v.d}</span>
+    </div>
+    <p>${v.t}</p>
+    <div class="meta">
+      <span>${v.views} vues</span>
+      <span>${v.c}</span>
+    </div>
+  </div>`;
+});
 </script>
 
 </body>
 </html>
-
-
