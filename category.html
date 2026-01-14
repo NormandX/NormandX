@@ -1,44 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Catégorie</title>
+<title>Catégorie - NormandX</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="header"></div>
 <script>
-fetch("header.html")
-.then(r=>r.text())
-.then(t=>document.getElementById("header").innerHTML=t);
+if (localStorage.getItem("ageVerified") !== "true") {
+  location.href = "index.html";
+}
 </script>
 
-<header>
-  <div class="logo" onclick="location.href='home.html'"><span>Normand</span><span>X</span></div>
-</header>
-
-<main>
-<div class="back" onclick="history.back()">← Retour</div>
-<h2 id="title"></h2>
-<div class="grid" id="grid"></div>
-</main>
-
-<script>
-const cat=new URLSearchParams(location.search).get("c");
-title.textContent=cat;
-const videos=JSON.parse(localStorage.getItem("videos"));
-videos.filter(v=>v.c===cat).forEach(v=>{
- grid.innerHTML+=`
- <div class="card">
-  <img src="${v.i}" onclick="location.href='video.html?id=${v.id}'">
-  <p>${v.t}</p>
- </div>`;
-});
-</script>
+<h1 style="margin-top:80px;text-align:center;">Catégorie</h1>
 
 </body>
 </html>
-
-
-
