@@ -2,56 +2,12 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Favoris</title>
+<title>Favoris - NormandX</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-  <div class="logo" onclick="location.href='home.html'">
-    <span>Normand</span><span>X</span>
-  </div>
-</header>
-
-<main>
-  <div class="back" onclick="history.back()">← Retour</div>
-  <h2>Mes favoris</h2>
-  <div class="grid" id="grid"></div>
-</main>
-
-<script>
-const user=localStorage.getItem("connected");
-const favs=JSON.parse(localStorage.getItem("fav_"+user)||"[]");
-const videos=JSON.parse(localStorage.getItem("allVideos"));
-const grid=document.getElementById("grid");
-
-<header>
-  <div class="logo" onclick="location.href='home.html'">
-    <span>Normand</span><span>X</span>
-  </div>
-
-  <input class="search" placeholder="Rechercher..." oninput="search(this.value)">
-
-  <div class="account">
-    <img src="account.png" class="avatar" onclick="toggleMenu()">
-    <div class="menu" id="menu">
-      <a href="favorites.html">❤️ Favoris</a>
-      <a onclick="logout()">🚪 Déconnexion</a>
-    </div>
-  </div>
-</header>
-
-videos.filter(v=>favs.includes(v.id)).forEach(v=>{
-  grid.innerHTML+=`
-  <div class="card">
-    <img src="${v.i}" onclick="location.href='video.html?id=${v.id}'">
-    <p>${v.t}</p>
-  </div>`;
-});
-</script>
+<h1 style="margin-top:80px;text-align:center;">Mes Favoris</h1>
 
 </body>
 </html>
-
-
-
