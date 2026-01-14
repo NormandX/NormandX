@@ -107,9 +107,15 @@ main{flex:1;padding:20px}
 }
 .back:hover{background:#ff9000;color:#000}
 
+.menu,
+nav {
+  display: none !important;
+}
+
 /* MOBILE */
 @media(max-width:900px){
  aside{display:none}
  .search{display:none}
  header{justify-content:space-between}
 }
+
