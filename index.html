@@ -1,41 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <title>NormandX</title>
 <style>
 body{
-  margin:0;height:100vh;
-  background:radial-gradient(circle,#3b145f,#000);
-  display:flex;align-items:center;justify-content:center;
-  font-family:Arial;color:white;
+  margin:0;
+  height:100vh;
+  background:
+    radial-gradient(circle at center,#3b145f,#000);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Arial,Helvetica,sans-serif;
+  color:white;
 }
+
 .box{
   background:rgba(20,20,20,.92);
-  padding:40px;border-radius:18px;
-  width:360px;text-align:center;
+  padding:40px;
+  border-radius:18px;
+  width:360px;
+  text-align:center;
+  box-shadow:0 0 40px rgba(0,0,0,.9);
+  animation:fade .4s ease;
 }
-.logo{font-size:36px;font-weight:900}
+
+.logo{
+  font-size:36px;
+  font-weight:900;
+  margin-bottom:15px;
+}
 .logo span:first-child{color:red}
 .logo span:last-child{color:#ffb400}
-.buttons{display:flex;gap:15px;margin-top:25px}
-button{flex:1;padding:14px;border:none;border-radius:10px}
+
+.buttons{
+  display:flex;
+  gap:15px;
+  margin-top:25px;
+}
+button{
+  flex:1;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+}
 .yes{background:#8dffb3}
 .no{background:#ff5f7a;color:white}
+
+small{opacity:.6;font-size:11px}
+
+@keyframes fade{
+  from{opacity:0;transform:scale(.95)}
+  to{opacity:1}
+}
 </style>
 </head>
+
 <body>
+
 <div class="box">
   <div class="logo"><span>Normand</span><span>X</span></div>
-  <p>Site réservé aux +18</p>
+  <p>Ce site est réservé aux personnes majeures (+18).</p>
+
   <div class="buttons">
-    <button class="yes" onclick="ok()">Oui</button>
-    <button class="no" onclick="no()">Non</button>
+    <button class="yes" onclick="enter()">Oui, j’ai plus de 18 ans</button>
+    <button class="no" onclick="leave()">Non, je n’ai pas 18 ans</button>
   </div>
+
+  <small>
+    En entrant sur ce site, vous certifiez être majeur conformément aux lois en vigueur.
+  </small>
 </div>
+
 <script>
-function ok(){localStorage.setItem("age","1");location.href="auth.html";}
-function no(){location.href="https://google.com";}
+function enter(){
+  localStorage.setItem("age","ok");
+  location.href="auth.html";
+}
+function leave(){
+  location.href="https://google.com";
+}
 </script>
+
 </body>
 </html>
