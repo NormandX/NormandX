@@ -1,0 +1,94 @@
+home.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>NormandX</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="location.href='home.html'"><span>Normand</span><span>X</span></div>
+  <input class="search" placeholder="Rechercher..." oninput="search(this.value)">
+  <div class="account">
+    <img src="account.png" onclick="toggleMenu()">
+  </div>
+</header>
+
+<div class="menu" id="menu">
+  <a href="account.html">Compte</a>
+  <a href="favorites.html">Favoris</a>
+  <a onclick="logout()">Déconnexion</a>
+</div>
+
+<div class="layout">
+<aside>
+  <a onclick="filter('Hetero')">Hétéro</a>
+  <a onclick="filter('Gays')">Gays</a>
+  <a onclick="filter('MILF')">MILF</a>
+</aside>
+
+<main>
+  <div class="grid" id="grid"></div>
+</main>
+</div>
+
+<script>
+const user=localStorage.getItem("connected");
+if(!user) location.href="auth.html";
+
+function toggleMenu(){menu.style.display=menu.style.display==="block"?"none":"block";}
+function logout(){localStorage.removeItem("connected");location.href="auth.html";}
+
+const videos=[
+ {id:1,t:"Vidéo 1",c:"Hetero",i:"thumbs/1.jpg",v:"videos/1.mp4"},
+ {id:2,t:"Vidéo 2",c:"MILF",i:"thumbs/2.jpg",v:"videos/2.mp4"}
+];
+localStorage.setItem("videos",JSON.stringify(videos));
+
+function render(list){
+ grid.innerHTML="";
+ const likes=JSON.parse(localStorage.getItem("likes_"+user)||"[]");
+ const favs=JSON.parse(localStorage.getItem("fav_"+user)||"[]");
+ list.forEach(v=>{
+  grid.innerHTML+=`
+  <div class="card">
+    <img src="${v.i}" onclick="openVideo(${v.id})">
+    <p>${v.t}</p>
+    <div class="actions">
+      <button class="like ${likes.includes(v.id)?'active':''}" onclick="like(${v.id},this)">👍</button>
+      <button class="fav ${favs.includes(v.id)?'active':''}" onclick="fav(${v.id},this)">❤</button>
+    </div>
+  </div>`;
+ });
+}
+render(videos);
+
+function search(q){render(videos.filter(v=>v.t.toLowerCase().includes(q.toLowerCase())));}
+function filter(c){render(videos.filter(v=>v.c===c));}
+
+function openVideo(id){
+ let h=JSON.parse(localStorage.getItem("history_"+user)||"[]");
+ h.unshift(id);h=[...new Set(h)];
+ localStorage.setItem("history_"+user,JSON.stringify(h));
+ location.href="video.html?id="+id;
+}
+
+function like(id,btn){
+ let l=JSON.parse(localStorage.getItem("likes_"+user)||"[]");
+ if(l.includes(id)){l=l.filter(x=>x!==id);btn.classList.remove("active");}
+ else{l.push(id);btn.classList.add("active");}
+ localStorage.setItem("likes_"+user,JSON.stringify(l));
+}
+
+function fav(id,btn){
+ let f=JSON.parse(localStorage.getItem("fav_"+user)||"[]");
+ if(f.includes(id)){f=f.filter(x=>x!==id);btn.classList.remove("active");}
+ else{f.push(id);btn.classList.add("active");}
+ localStorage.setItem("fav_"+user,JSON.stringify(f));
+}
+</script>
+</body>
+</html>

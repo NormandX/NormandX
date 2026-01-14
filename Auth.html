@@ -1,0 +1,43 @@
+Auth.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Connexion</title>
+<style>
+body{
+  background:#000;color:white;
+  display:flex;align-items:center;justify-content:center;
+  height:100vh;font-family:Arial;
+}
+.box{
+  background:#111;padding:30px;border-radius:12px;width:320px;
+}
+input,button{width:100%;padding:10px;margin:8px 0}
+button{background:#ff9000;border:none}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>NormandX</h2>
+  <input id="u" placeholder="Pseudo">
+  <input id="p" type="password" placeholder="Mot de passe">
+  <button onclick="login()">Connexion</button>
+  <button onclick="register()">Créer un compte</button>
+</div>
+<script>
+if(!localStorage.getItem("age")) document.body.innerHTML="Accès refusé";
+function register(){
+  localStorage.setItem("user_"+u.value,p.value);
+  alert("Compte créé");
+}
+function login(){
+  if(localStorage.getItem("user_"+u.value)===p.value){
+    localStorage.setItem("connected",u.value);
+    location.href="home.html";
+  }else alert("Erreur");
+}
+</script>
+</body>
+</html>

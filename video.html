@@ -1,0 +1,50 @@
+video.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Vidéo</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+ <div class="logo" onclick="location.href='home.html'"><span>Normand</span><span>X</span></div>
+</header>
+
+<main>
+ <div class="back" onclick="history.back()">← Retour</div>
+ <video controls style="width:100%;border-radius:12px" id="player"></video>
+ <div class="actions" style="margin-top:10px">
+  <button class="like" id="likeBtn">👍 Like</button>
+  <button class="fav" id="favBtn">❤ Favori</button>
+ </div>
+</main>
+
+<script>
+const user=localStorage.getItem("connected");
+const id=parseInt(new URLSearchParams(location.search).get("id"));
+const vids=JSON.parse(localStorage.getItem("videos"));
+const v=vids.find(x=>x.id===id);
+player.src=v.v;
+
+let likes=JSON.parse(localStorage.getItem("likes_"+user)||"[]");
+let favs=JSON.parse(localStorage.getItem("fav_"+user)||"[]");
+
+if(likes.includes(id)) likeBtn.classList.add("active");
+if(favs.includes(id)) favBtn.classList.add("active");
+
+likeBtn.onclick=()=>{
+ likes.includes(id)?likes=likes.filter(x=>x!==id):likes.push(id);
+ likeBtn.classList.toggle("active");
+ localStorage.setItem("likes_"+user,JSON.stringify(likes));
+}
+favBtn.onclick=()=>{
+ favs.includes(id)?favs=favs.filter(x=>x!==id):favs.push(id);
+ favBtn.classList.toggle("active");
+ localStorage.setItem("fav_"+user,JSON.stringify(favs));
+}
+</script>
+</body>
+</html>

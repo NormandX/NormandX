@@ -1,0 +1,32 @@
+account.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compte</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="logo" onclick="location.href='home.html'"><span>Normand</span><span>X</span></div>
+</header>
+<main>
+<div class="back" onclick="history.back()">← Retour</div>
+<h2>Historique</h2>
+<div class="grid" id="grid"></div>
+</main>
+<script>
+const user=localStorage.getItem("connected");
+const hist=JSON.parse(localStorage.getItem("history_"+user)||"[]");
+const vids=JSON.parse(localStorage.getItem("videos"));
+hist.map(id=>vids.find(v=>v.id===id)).forEach(v=>{
+ grid.innerHTML+=`
+ <div class="card">
+  <img src="${v.i}" onclick="location.href='video.html?id=${v.id}'">
+  <p>${v.t}</p>
+ </div>`;
+});
+</script>
+</body>
+</html>
