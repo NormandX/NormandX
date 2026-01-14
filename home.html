@@ -20,6 +20,7 @@
 <div class="menu" id="menu">
   <a href="account.html">Compte</a>
   <a href="favorites.html">Favoris</a>
+  <a href="history.html">Historique</a>
   <a onclick="logout()">Déconnexion</a>
 </div>
 
@@ -27,6 +28,7 @@
 <aside>
   <a onclick="filter('Hetero')">Hétéro</a>
   <a onclick="filter('MILF')">MILF</a>
+  <a onclick="filter('Teen')">Teen</a>
 </aside>
 
 <main>
@@ -39,100 +41,106 @@ const user = localStorage.getItem("connected");
 if(!user) location.href="auth.html";
 
 function toggleMenu(){
-  menu.style.display = menu.style.display==="block"?"none":"block";
+ menu.style.display = menu.style.display==="block" ? "none" : "block";
 }
 function logout(){
-  localStorage.removeItem("connected");
-  location.href="auth.html";
+ localStorage.removeItem("connected");
+ location.href="auth.html";
 }
 
 /* ===== VIDEOS ===== */
 const videos = [
  {
-   id:1,
-   t:"Carla Cute 1",
-   c:"Hetero",
-   poster:"thumbs/1.jpg",
-   v:"https://ia601703.us.archive.org/22/items/video-1_20260114/Video1.mp4",
-   d:"12:34",
-   hd:true,
-   views:0
+  id:1,
+  t:"Carla Cute 1",
+  c:"Hetero",
+  poster:"thumbs/1.jpg",
+  v:"https://ia601703.us.archive.org/22/items/video-1_20260114/Video1.mp4",
+  d:"12:34",
+  views:0
  }
 ];
+localStorage.setItem("videos", JSON.stringify(videos));
 
+/* ===== RENDER ===== */
 function render(list){
-  grid.innerHTML="";
-  list.forEach(v=>{
-    grid.innerHTML+=`
-    <div class="card" onclick="openVideo(${v.id})">
-      <div class="thumb"
-        onmouseenter="previewStart(this)"
-        onmouseleave="previewStop(this)">
-        
-        <video
-          preload="metadata"
-          muted
-          playsinline
-          poster="${v.poster}">
-          <source src="${v.v}" type="video/mp4">
-        </video>
+ grid.innerHTML="";
+ list.forEach(v=>{
+  grid.innerHTML += `
+  <div class="card" onclick="openVideo(${v.id})">
 
-        ${v.hd?'<span class="badge">HD</span>':''}
-        <span class="duration">${v.d}</span>
-        <div class="progress"><div></div></div>
-      </div>
+    <div class="thumb"
+      onmouseenter="previewStart(this)"
+      onmouseleave="previewStop(this)">
 
-      <p>${v.t}</p>
-      <div class="meta">
-        <span>${v.views} vues</span>
-        <span>${v.c}</span>
-      </div>
+      <img class="thumb-img" src="${v.poster}">
+      <video class="thumb-video" muted playsinline preload="none">
+        <source src="${v.v}" type="video/mp4">
+      </video>
 
-      <div class="actions" onclick="event.stopPropagation()">
-        <button>👍</button>
-        <button>❤</button>
-      </div>
-    </div>`;
-  });
+      <span class="duration">${v.d}</span>
+      <div class="progress"><div></div></div>
+    </div>
+
+    <p>${v.t}</p>
+
+    <div class="meta">
+      <span>${v.views} vues</span>
+      <span>${v.c}</span>
+    </div>
+
+    <div class="actions" onclick="event.stopPropagation()">
+      <button>👍</button>
+      <button>❤</button>
+    </div>
+
+  </div>`;
+ });
 }
 render(videos);
 
-/* ===== PREVIEW LOGIC (PORNHUB) ===== */
-let hoverTimer;
-
+/* ===== PREVIEW ===== */
 function previewStart(el){
-  const video = el.querySelector("video");
-  const bar = el.querySelector(".progress div");
+ const img = el.querySelector(".thumb-img");
+ const video = el.querySelector(".thumb-video");
+ const bar = el.querySelector(".progress div");
 
-  hoverTimer = setTimeout(()=>{
-    video.currentTime = 0;
-    video.play();
+ video.currentTime = 0;
+ video.play();
 
-    video.ontimeupdate = ()=>{
-      bar.style.width =
-        (video.currentTime / video.duration * 100) + "%";
-    };
-  }, 300); // DELAY PORNHUB
+ img.style.opacity = "0";
+ video.style.opacity = "1";
+
+ video.ontimeupdate = ()=>{
+  bar.style.width =
+   (video.currentTime / video.duration * 100) + "%";
+ };
 }
 
 function previewStop(el){
-  clearTimeout(hoverTimer);
-  const video = el.querySelector("video");
-  const bar = el.querySelector(".progress div");
-  video.pause();
-  video.currentTime = 0;
-  bar.style.width = "0%";
+ const img = el.querySelector(".thumb-img");
+ const video = el.querySelector(".thumb-video");
+ const bar = el.querySelector(".progress div");
+
+ video.pause();
+ video.currentTime = 0;
+ bar.style.width = "0%";
+
+ video.style.opacity = "0";
+ img.style.opacity = "1";
 }
 
+/* ===== OPEN VIDEO ===== */
 function openVideo(id){
-  location.href="video.html?id="+id;
+ location.href = "video.html?id="+id;
 }
 
+/* ===== SEARCH / FILTER ===== */
 function search(q){
-  render(videos.filter(v=>v.t.toLowerCase().includes(q.toLowerCase())));
+ render(videos.filter(v=>v.t.toLowerCase().includes(q.toLowerCase())));
 }
 function filter(c){
-  render(videos.filter(v=>v.c===c));
+ render(videos.filter(v=>v.c===c));
 }
 </script>
 
