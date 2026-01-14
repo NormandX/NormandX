@@ -2,91 +2,159 @@
 body{margin:0;background:#000;color:#fff;font-family:Arial}
 a{text-decoration:none;color:inherit}
 
+/* HEADER */
 header{
  display:flex;align-items:center;
- padding:12px 16px;background:#111
+ padding:12px 16px;
+ background:#111;
+ position:sticky;top:0;z-index:10;
 }
-.logo{font-size:26px;font-weight:900}
+.logo{font-size:26px;font-weight:900;cursor:pointer}
 .logo span:first-child{color:red}
 .logo span:last-child{color:#ffb400}
 .search{
  margin:auto;width:360px;
- padding:10px;border-radius:20px;
- background:#222;border:none;color:#fff
+ padding:10px 16px;
+ border-radius:20px;
+ border:none;background:#222;color:#fff;
 }
-.account img{width:36px;border-radius:50%}
+.account{
+ width:38px;height:38px;border-radius:50%;
+ overflow:hidden;border:2px solid #ff9000;
+}
 
+/* MENU */
 .menu{
- position:absolute;right:16px;top:60px;
- background:#111;border-radius:10px;
- display:none
+ display:none;
+ position:absolute;
+ right:16px;top:60px;
+ background:#111;
+ border-radius:14px;
+ min-width:180px;
+ box-shadow:0 10px 30px rgba(0,0,0,.7);
 }
-.menu a{display:block;padding:10px}
+.menu a{
+ display:block;padding:14px;color:#ccc
+}
+.menu a:hover{background:#1a1a1a;color:#ff9000}
 
+/* LAYOUT */
 .layout{display:flex}
-aside{width:200px;padding:14px;background:#0d0d0d}
-aside a{display:block;padding:10px;border-radius:8px;color:#ccc}
+aside{
+ width:220px;background:#0d0d0d;padding:14px
+}
+aside a{
+ display:block;padding:10px;
+ border-radius:8px;color:#ccc
+}
 aside a:hover{background:#1a1a1a;color:#ff9000}
 main{flex:1;padding:20px}
 
+/* GRID */
 .grid{
  display:grid;
  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
- gap:16px
+ gap:16px;
 }
 
+/* CARD */
 .card{
- background:#111;border-radius:14px;
- overflow:hidden;cursor:pointer
+ background:#111;
+ border-radius:14px;
+ overflow:hidden;
+ cursor:pointer;
+ transition:.2s;
 }
-.card:hover{transform:translateY(-4px)}
+.card:hover{transform:translateY(-6px)}
 
+/* THUMB */
 .thumb{
  position:relative;
+ width:100%;
  aspect-ratio:16/9;
- background:#000
-}
-.thumb video,.thumb img{
- width:100%;height:100%;
- object-fit:cover
+ overflow:hidden;
+ background:#000;
 }
 
+/* IMAGE & VIDEO */
+.thumb img,
+.thumb video{
+ position:absolute;
+ top:0;left:0;
+ width:100%;
+ height:100%;
+ object-fit:cover;
+}
+
+.thumb-video{
+ opacity:0;
+ pointer-events:none;
+ transition:opacity .2s ease;
+}
+
+.thumb:hover .thumb-video{opacity:1}
+.thumb:hover .thumb-img{opacity:0}
+
+/* BADGES */
 .badge{
- position:absolute;top:6px;left:6px;
- background:#ff9000;color:#000;
- font-size:11px;padding:2px 6px;border-radius:4px
+ position:absolute;top:8px;left:8px;
+ background:#ff9000;
+ color:#000;
+ font-size:11px;
+ padding:2px 6px;
+ border-radius:4px;
+ font-weight:bold;
 }
 .duration{
- position:absolute;right:6px;bottom:6px;
- background:rgba(0,0,0,.7);
- padding:2px 6px;border-radius:4px;font-size:12px
+ position:absolute;
+ right:8px;bottom:22px;
+ background:rgba(0,0,0,.75);
+ padding:2px 6px;
+ font-size:12px;
+ border-radius:4px;
 }
 
+/* PROGRESS */
 .progress{
- position:absolute;bottom:0;width:100%;height:4px;
- background:rgba(255,255,255,.2)
+ position:absolute;
+ bottom:0;left:0;
+ width:100%;height:4px;
+ background:rgba(255,255,255,.2);
 }
-.progress div{height:100%;width:0;background:#ff9000}
+.progress div{
+ width:0;height:100%;
+ background:#ff9000;
+}
 
-.meta{display:flex;justify-content:space-between;font-size:12px;opacity:.7}
+/* TEXT */
+.card p{
+ margin:8px 10px 4px;
+ font-size:14px;font-weight:600
+}
+.meta{
+ display:flex;
+ justify-content:space-between;
+ font-size:12px;
+ opacity:.7;
+ margin:0 10px 6px
+}
+
+/* ACTIONS */
+.actions{
+ display:flex;gap:10px;
+ padding:6px 10px 10px
+}
 .actions button{
- background:none;border:none;color:#777;font-size:18px
+ background:none;border:none;
+ color:#666;font-size:18px;
+ cursor:pointer
 }
+.like.active{color:#ff3050}
+.fav.active{color:#ffb400}
 
-.back{
- cursor:pointer;
- padding:8px 14px;
- border-radius:20px;
- background:#222;
- display:inline-block
-}
-
-.player-page video{
- width:100%;
- max-height:90vh;
- background:#000
-}
-
+/* MOBILE */
 @media(max-width:900px){
  aside,.search{display:none}
+ header{justify-content:space-between}
+ .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
 }
