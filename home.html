@@ -13,13 +13,14 @@
   </div>
   <input class="search" placeholder="Rechercher..." oninput="search(this.value)">
   <div class="account" onclick="toggleMenu()">
-    <img src="https://ia600401.us.archive.org/33/items/person_avatar_account_user_icon_191606/person_avatar_account_user_icon_191606.webp">
+    <img src="account.png">
   </div>
 </header>
 
 <div class="menu" id="menu">
   <a href="account.html">Compte</a>
   <a href="favorites.html">Favoris</a>
+  <a href="history.html">Historique</a>
   <a onclick="logout()">Déconnexion</a>
 </div>
 
@@ -49,7 +50,7 @@ const user = localStorage.getItem("connected");
 if(!user) location.href="auth.html";
 
 function toggleMenu(){
-  menu.style.display = menu.style.display==="block" ? "none" : "block";
+  menu.style.display = menu.style.display==="block"?"none":"block";
 }
 function logout(){
   localStorage.removeItem("connected");
@@ -59,132 +60,125 @@ function logout(){
 /* ===== VIDEOS ===== */
 const videos = [
  {
-   id:1,
-   t:"Carla Cute 1",
-   c:"Hetero",
-   poster:"thumbs/1.jpg",
-   v:"https://ia601703.us.archive.org/22/items/video-1_20260114/Video1.mp4",
-   d:"12:34",
-   hd:true,
-   views:0
+  id:1,
+  t:"Carla Cute 1",
+  c:"Hetero",
+  poster:"thumbs/1.jpg",
+  v:"https://ia601703.us.archive.org/22/items/video-1_20260114/Video1.mp4",
+  d:"12:34",
+  hd:true,
+  views:0
  }
 ];
 
-localStorage.setItem("videos", JSON.stringify(videos));
+if(!localStorage.getItem("videos")){
+ localStorage.setItem("videos",JSON.stringify(videos));
+}
 
 /* ===== RENDER ===== */
 function render(list){
-  grid.innerHTML = "";
+ grid.innerHTML="";
+ const likes = JSON.parse(localStorage.getItem("likes_"+user)||"[]");
+ const favs  = JSON.parse(localStorage.getItem("fav_"+user)||"[]");
 
-  const likes = JSON.parse(localStorage.getItem("likes_"+user) || "[]");
-  const favs  = JSON.parse(localStorage.getItem("fav_"+user) || "[]");
+ list.forEach(v=>{
+  grid.innerHTML+=`
+  <div class="card" onclick="openVideo(${v.id})">
+    <div class="thumb"
+      onmouseenter="previewStart(this)"
+      onmouseleave="previewStop(this)"
+      ontouchstart="previewStart(this)"
+      ontouchend="previewStop(this)">
 
-  list.forEach(v=>{
-    grid.innerHTML += `
-    <div class="card" onclick="openVideo(${v.id})">
+      <img src="${v.poster}">
+      <video muted playsinline preload="metadata">
+        <source src="${v.v}" type="video/mp4">
+      </video>
 
-      <div class="thumb"
-        onmouseenter="previewStart(this)"
-        onmouseleave="previewStop(this)">
+      ${v.hd?'<span class="badge">HD</span>':''}
+      <span class="duration">${v.d}</span>
+      <div class="progress"><div></div></div>
+    </div>
 
-        <img class="thumb-img" src="${v.poster}">
+    <p>${v.t}</p>
+    <div class="meta">
+      <span>${v.views} vues</span>
+      <span>${v.c}</span>
+    </div>
 
-        <video class="thumb-video" muted playsinline preload="none">
-          <source src="${v.v}" type="video/mp4">
-        </video>
-
-        ${v.hd ? '<span class="badge">HD</span>' : ''}
-        <span class="duration">${v.d}</span>
-        <div class="progress"><div></div></div>
-      </div>
-
-      <p>${v.t}</p>
-
-      <div class="meta">
-        <span>${v.views} vues</span>
-        <span>${v.c}</span>
-      </div>
-
-      <div class="actions" onclick="event.stopPropagation()">
-        <button class="like ${likes.includes(v.id)?'active':''}"
-          onclick="like(${v.id},this)">👍</button>
-        <button class="fav ${favs.includes(v.id)?'active':''}"
-          onclick="fav(${v.id},this)">❤</button>
-      </div>
-
-    </div>`;
-  });
+    <div class="actions" onclick="event.stopPropagation()">
+      <button class="like ${likes.includes(v.id)?'active':''}"
+        onclick="like(${v.id},this)">👍</button>
+      <button class="fav ${favs.includes(v.id)?'active':''}"
+        onclick="fav(${v.id},this)">❤</button>
+    </div>
+  </div>`;
+ });
 }
+render(JSON.parse(localStorage.getItem("videos")));
 
-render(videos);
-
-/* ===== PREVIEW (PORNHUB STYLE) ===== */
+/* ===== PREVIEW ===== */
 let hoverTimer;
-
 function previewStart(el){
-  const video = el.querySelector(".thumb-video");
-  const bar = el.querySelector(".progress div");
+ const video = el.querySelector("video");
+ const bar = el.querySelector(".progress div");
 
-  hoverTimer = setTimeout(()=>{
-    video.currentTime = 0;
-    video.play();
-
-    video.ontimeupdate = ()=>{
-      bar.style.width =
-        (video.currentTime / video.duration * 100) + "%";
-    };
-  }, 300);
-}
-
-function previewStop(el){
-  clearTimeout(hoverTimer);
-  const video = el.querySelector(".thumb-video");
-  const bar = el.querySelector(".progress div");
-
-  video.pause();
+ el.classList.add("preview");
+ hoverTimer = setTimeout(()=>{
   video.currentTime = 0;
-  bar.style.width = "0%";
+  video.play();
+  video.ontimeupdate=()=>{
+   bar.style.width=(video.currentTime/video.duration*100)+"%";
+  };
+ },300);
+}
+function previewStop(el){
+ clearTimeout(hoverTimer);
+ const video = el.querySelector("video");
+ const bar = el.querySelector(".progress div");
+ el.classList.remove("preview");
+ video.pause();
+ video.currentTime=0;
+ bar.style.width="0%";
 }
 
-/* ===== OPEN VIDEO / HISTORY ===== */
+/* ===== VIDEO OPEN ===== */
 function openVideo(id){
-  let vids = JSON.parse(localStorage.getItem("videos"));
-  let v = vids.find(x=>x.id===id);
-  v.views++;
-  localStorage.setItem("videos", JSON.stringify(vids));
+ let vids = JSON.parse(localStorage.getItem("videos"));
+ let v = vids.find(x=>x.id===id);
+ v.views++;
+ localStorage.setItem("videos",JSON.stringify(vids));
 
-  let h = JSON.parse(localStorage.getItem("history_"+user) || "[]");
-  h.unshift(id);
-  h = [...new Set(h)];
-  localStorage.setItem("history_"+user, JSON.stringify(h));
+ let h = JSON.parse(localStorage.getItem("history_"+user)||"[]");
+ h.unshift(id);
+ h=[...new Set(h)];
+ localStorage.setItem("history_"+user,JSON.stringify(h));
 
-  location.href="video.html?id="+id;
+ location.href="video.html?id="+id;
 }
 
 /* ===== SEARCH / FILTER ===== */
 function search(q){
-  render(videos.filter(v=>v.t.toLowerCase().includes(q.toLowerCase())));
+ render(videos.filter(v=>v.t.toLowerCase().includes(q.toLowerCase())));
 }
 function filter(c){
-  render(videos.filter(v=>v.c===c));
+ render(videos.filter(v=>v.c===c));
 }
 
-/* ===== LIKE / FAVORIS ===== */
+/* ===== LIKE / FAV ===== */
 function like(id,btn){
-  let l = JSON.parse(localStorage.getItem("likes_"+user) || "[]");
-  l.includes(id) ? l=l.filter(x=>x!==id) : l.push(id);
-  btn.classList.toggle("active");
-  localStorage.setItem("likes_"+user, JSON.stringify(l));
+ let l=JSON.parse(localStorage.getItem("likes_"+user)||"[]");
+ l.includes(id)?l=l.filter(x=>x!==id):l.push(id);
+ btn.classList.toggle("active");
+ localStorage.setItem("likes_"+user,JSON.stringify(l));
 }
-
 function fav(id,btn){
-  let f = JSON.parse(localStorage.getItem("fav_"+user) || "[]");
-  f.includes(id) ? f=f.filter(x=>x!==id) : f.push(id);
-  btn.classList.toggle("active");
-  localStorage.setItem("fav_"+user, JSON.stringify(f));
+ let f=JSON.parse(localStorage.getItem("fav_"+user)||"[]");
+ f.includes(id)?f=f.filter(x=>x!==id):f.push(id);
+ btn.classList.toggle("active");
+ localStorage.setItem("fav_"+user,JSON.stringify(f));
 }
 </script>
 
 </body>
 </html>
-
