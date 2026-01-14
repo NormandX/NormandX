@@ -4,10 +4,13 @@ a{text-decoration:none;color:inherit}
 
 /* HEADER */
 header{
- display:flex;align-items:center;
+ display:flex;
+ align-items:center;
  padding:12px 16px;
  background:#111;
- position:sticky;top:0;z-index:10;
+ position:sticky;
+ top:0;
+ z-index:10;
 }
 .logo{font-size:26px;font-weight:900;cursor:pointer}
 .logo span:first-child{color:red}
@@ -19,7 +22,8 @@ header{
  padding:10px 16px;
  border-radius:20px;
  border:none;
- background:#222;color:#fff;
+ background:#222;
+ color:#fff;
 }
 
 .account{
@@ -35,7 +39,8 @@ header{
 .menu{
  display:none;
  position:absolute;
- right:16px;top:60px;
+ right:16px;
+ top:60px;
  background:#111;
  border-radius:14px;
  min-width:180px;
@@ -65,187 +70,101 @@ aside a{
 aside a:hover{background:#1a1a1a;color:#ff9000}
 main{flex:1;padding:20px}
 
-/* VIDEOS */
+/* GRID PORNHUB */
 .grid{
  display:grid;
- grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+ grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
  gap:16px;
 }
+
+/* CARD */
 .card{
  background:#111;
- border-radius:12px;
+ border-radius:14px;
  overflow:hidden;
- transition:.25s;
+ cursor:pointer;
+ transition:.2s;
 }
 .card:hover{transform:translateY(-6px)}
-.card img{width:100%;cursor:pointer}
-.card p{margin:8px;font-size:13px}
 
+/* THUMB 16:9 */
+.thumb{
+ position:relative;
+ width:100%;
+ aspect-ratio:16/9;
+ overflow:hidden;
+ background:#000;
+}
+.thumb img,
+.thumb video{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+ display:block;
+}
+.thumb video{
+ position:absolute;
+ top:0;left:0;
+ opacity:0;
+ transition:.2s;
+ pointer-events:none;
+}
+
+/* PLAY */
+.play{
+ position:absolute;
+ top:50%;left:50%;
+ transform:translate(-50%,-50%);
+ width:80px;height:80px;
+ border-radius:50%;
+ background:rgba(0,0,0,.6);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:42px;
+ color:#fff;
+ pointer-events:none;
+ transition:.2s;
+}
+
+/* HOVER */
+.card:hover video{opacity:1}
+.card:hover img{opacity:0}
+.card:hover .play{opacity:0}
+
+/* TEXT */
+.card p{
+ margin:8px 10px 4px;
+ font-size:14px;
+ font-weight:600;
+}
 .meta{
  display:flex;
  justify-content:space-between;
  font-size:12px;
- color:#777;
- margin:0 8px 6px;
+ opacity:.7;
+ margin:0 10px 6px;
 }
-
-/* ACTIONS */
 .actions{
  display:flex;
- justify-content:space-between;
- padding:0 8px 10px;
+ gap:10px;
+ padding:6px 10px 10px;
 }
 .like,.fav{
- background:none;border:none;
- font-size:18px;cursor:pointer;
+ background:none;
+ border:none;
+ font-size:18px;
+ cursor:pointer;
  color:#666;
 }
 .like.active{color:#ff3050}
 .fav.active{color:#ffb400}
 
-/* RETOUR */
-.back{
- display:inline-block;
- margin-bottom:15px;
- padding:8px 16px;
- background:#1a1a1a;
- border-radius:30px;
- cursor:pointer;
-}
-.back:hover{background:#ff9000;color:#000}
-
 /* MOBILE */
 @media(max-width:900px){
  aside{display:none}
  .search{display:none}
- header{justify-content:space-between}
- .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
- .preview{
-  position:relative;
+ .grid{
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr))
+ }
 }
-
-.preview video{
-  position:absolute;
-  top:0;left:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:none;
-  pointer-events:none;
-}
-.preview:hover video{
-  display:block;
-}
-
-/* --- VIDEO PREVIEW --- */
-.card {
-  cursor: pointer;
-}
-
-.thumb {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.thumb img,
-.thumb video {
-  width: 100%;
-  display: block;
-  border-radius: 12px;
-}
-
-.thumb video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-
-/* au survol */
-.thumb:hover video {
-  opacity: 1;
-}
-
-.thumb:hover img {
-  opacity: 0;
-}
-
- /* === GRID STYLE PORNHUB === */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-}
-
-/* === CARD === */
-.card {
-  background: #111;
-  border-radius: 14px;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-/* === THUMB FORMAT 16:9 === */
-.thumb {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;   /* CLÉ DU FORMAT PORNHUB */
-  overflow: hidden;
-}
-
-/* image + vidéo bien cadrées */
-.thumb img,
-.thumb video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;     /* zoom / cadrage comme Pornhub */
-  display: block;
-}
-
-/* vidéo par-dessus */
-.thumb video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-}
-
-/* hover preview */
-.thumb:hover video {
-  opacity: 1;
-}
-
-.thumb:hover img {
-  opacity: 0;
-}
-
-/* === TEXTE === */
-.card p {
-  margin: 8px 10px 4px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  opacity: 0.7;
-  margin: 0 10px 6px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  padding: 6px 10px 10px;
-}
-
- 
-}
-
-
