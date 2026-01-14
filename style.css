@@ -4,13 +4,10 @@ a{text-decoration:none;color:inherit}
 
 /* HEADER */
 header{
- display:flex;
- align-items:center;
+ display:flex;align-items:center;
  padding:12px 16px;
  background:#111;
- position:sticky;
- top:0;
- z-index:10;
+ position:sticky;top:0;z-index:10;
 }
 .logo{font-size:26px;font-weight:900;cursor:pointer}
 .logo span:first-child{color:red}
@@ -22,8 +19,7 @@ header{
  padding:10px 16px;
  border-radius:20px;
  border:none;
- background:#222;
- color:#fff;
+ background:#222;color:#fff;
 }
 
 .account{
@@ -39,8 +35,7 @@ header{
 .menu{
  display:none;
  position:absolute;
- right:16px;
- top:60px;
+ right:16px;top:60px;
  background:#111;
  border-radius:14px;
  min-width:180px;
@@ -87,13 +82,13 @@ main{flex:1;padding:20px}
 }
 .card:hover{transform:translateY(-6px)}
 
-/* THUMB 16:9 */
+/* THUMB */
 .thumb{
  position:relative;
  width:100%;
  aspect-ratio:16/9;
  overflow:hidden;
- background:#000;
+ border-radius:14px;
 }
 .thumb img,
 .thumb video{
@@ -109,28 +104,19 @@ main{flex:1;padding:20px}
  transition:.2s;
  pointer-events:none;
 }
-
-/* PLAY */
-.play{
- position:absolute;
- top:50%;left:50%;
- transform:translate(-50%,-50%);
- width:80px;height:80px;
- border-radius:50%;
- background:rgba(0,0,0,.6);
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:42px;
- color:#fff;
- pointer-events:none;
- transition:.2s;
-}
-
-/* HOVER */
 .card:hover video{opacity:1}
 .card:hover img{opacity:0}
-.card:hover .play{opacity:0}
+
+/* DURATION */
+.duration{
+ position:absolute;
+ right:8px;
+ bottom:8px;
+ background:rgba(0,0,0,.75);
+ padding:2px 6px;
+ font-size:12px;
+ border-radius:4px;
+}
 
 /* TEXT */
 .card p{
@@ -145,16 +131,16 @@ main{flex:1;padding:20px}
  opacity:.7;
  margin:0 10px 6px;
 }
+
+/* ACTIONS */
 .actions{
  display:flex;
- gap:10px;
+ gap:12px;
  padding:6px 10px 10px;
 }
 .like,.fav{
- background:none;
- border:none;
- font-size:18px;
- cursor:pointer;
+ background:none;border:none;
+ font-size:18px;cursor:pointer;
  color:#666;
 }
 .like.active{color:#ff3050}
@@ -164,7 +150,6 @@ main{flex:1;padding:20px}
 @media(max-width:900px){
  aside{display:none}
  .search{display:none}
- .grid{
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr))
- }
+ header{justify-content:space-between}
+ .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
 }
