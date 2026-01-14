@@ -25,23 +25,18 @@ header{
 
 /* MENU */
 .menu{
- display:none;
- position:absolute;
+ display:none;position:absolute;
  right:16px;top:60px;
- background:#111;
- border-radius:14px;
- min-width:180px;
- box-shadow:0 10px 30px rgba(0,0,0,.7);
+ background:#111;border-radius:12px;
+ min-width:160px;
 }
-.menu a{
- display:block;padding:14px;color:#ccc
-}
+.menu a{display:block;padding:12px;color:#ccc}
 .menu a:hover{background:#1a1a1a;color:#ff9000}
 
 /* LAYOUT */
 .layout{display:flex}
 aside{
- width:220px;background:#0d0d0d;padding:14px
+ width:200px;background:#0d0d0d;padding:14px
 }
 aside a{
  display:block;padding:10px;
@@ -72,28 +67,23 @@ main{flex:1;padding:20px}
  position:relative;
  width:100%;
  aspect-ratio:16/9;
- overflow:hidden;
  background:#000;
+ overflow:hidden;
 }
-
-/* IMAGE & VIDEO */
 .thumb img,
 .thumb video{
  position:absolute;
  top:0;left:0;
- width:100%;
- height:100%;
+ width:100%;height:100%;
  object-fit:cover;
 }
-
-.thumb-video{
+.thumb video{
  opacity:0;
  pointer-events:none;
- transition:opacity .2s ease;
+ transition:.2s;
 }
-
-.thumb:hover .thumb-video{opacity:1}
-.thumb:hover .thumb-img{opacity:0}
+.thumb.preview video{opacity:1}
+.thumb.preview img{opacity:0}
 
 /* BADGES */
 .badge{
