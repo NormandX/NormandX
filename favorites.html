@@ -2,76 +2,37 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Favoris - NormandX</title>
+<title>Favoris</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-  <div class="back-btn" onclick="location.href='home.html'">←</div>
-  <h2>Favoris</h2>
+ <div class="back" onclick="history.back()">← Retour</div>
 </header>
 
 <main>
-  <div class="grid" id="grid"></div>
+ <h1>Favoris</h1>
+ <div class="grid" id="grid"></div>
 </main>
 
 <script>
-const user = localStorage.getItem("connected");
-if(!user) location.href="auth.html";
+const user=localStorage.getItem("connected");
+const fav=JSON.parse(localStorage.getItem("fav_"+user)||"[]");
+const videos=JSON.parse(localStorage.getItem("videos"));
 
-const videos = JSON.parse(localStorage.getItem("videos") || "[]");
-const favs = JSON.parse(localStorage.getItem("fav_"+user) || "[]");
-const grid = document.getElementById("grid");
-
-const list = videos.filter(v => favs.includes(v.id));
-
-if(list.length === 0){
-  grid.innerHTML = "<p style='opacity:.6'>Aucun favori</p>";
-}
-
-list.forEach(v=>{
- grid.innerHTML += `
- <div class="card" onclick="location.href='video.html?id=${v.id}'">
-  <div class="thumb"
-    onmouseenter="previewStart(this)"
-    onmouseleave="previewStop(this)">
-    <video muted preload="metadata" poster="${v.poster}">
-      <source src="${v.v}" type="video/mp4">
-    </video>
-    ${v.hd?'<span class="badge">HD</span>':''}
-    <span class="duration">${v.d}</span>
-    <div class="progress"><div></div></div>
+grid.innerHTML="";
+fav.forEach(id=>{
+ const v=videos.find(x=>x.id===id);
+ grid.innerHTML+=`
+ <div class="card" onclick="location.href='video.html?id=${id}'">
+  <div class="thumb">
+   <img src="${v.poster}">
+   <span class="duration">${v.d}</span>
   </div>
   <p>${v.t}</p>
-  <div class="meta">
-    <span>${v.views} vues</span>
-    <span>${v.c}</span>
-  </div>
  </div>`;
 });
-
-/* PREVIEW */
-let timer;
-function previewStart(el){
- const video = el.querySelector("video");
- const bar = el.querySelector(".progress div");
- timer = setTimeout(()=>{
-  video.currentTime = 0;
-  video.play();
-  video.ontimeupdate = ()=>{
-   bar.style.width =
-    (video.currentTime / video.duration * 100) + "%";
-  };
- },300);
-}
-function previewStop(el){
- clearTimeout(timer);
- const video = el.querySelector("video");
- const bar = el.querySelector(".progress div");
- video.pause(); video.currentTime = 0;
- bar.style.width = "0%";
-}
 </script>
 
 </body>
