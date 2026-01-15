@@ -22,24 +22,16 @@ if(!user) location.href="auth.html";
 const id=Number(new URLSearchParams(location.search).get("id"));
 let videos=JSON.parse(localStorage.getItem("videos"));
 const v=videos.find(x=>x.id===id);
+if(!v) history.back();
 
 const player=document.getElementById("player");
 player.src=v.v;
 player.poster=v.poster;
 
-/* vues */
-v.views++;
-localStorage.setItem("videos",JSON.stringify(videos));
-
-/* historique */
-let h=JSON.parse(localStorage.getItem("history_"+user)||"[]");
-if(!h.includes(id)){h.unshift(id);}
-localStorage.setItem("history_"+user,JSON.stringify(h));
-
 /* plein écran mobile */
 player.addEventListener("play",()=>{
- if(window.innerWidth<900){
-  if(player.requestFullscreen) player.requestFullscreen();
+ if(window.innerWidth<900 && player.requestFullscreen){
+  player.requestFullscreen();
  }
 });
 </script>
