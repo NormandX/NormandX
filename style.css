@@ -78,12 +78,18 @@ main{flex:1;padding:20px}
  object-fit:cover;
 }
 .thumb video{
- opacity:0;
- pointer-events:none;
- transition:.2s;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
 }
-.thumb.preview video{opacity:1}
-.thumb.preview img{opacity:0}
+
+.thumb.preview video{
+  opacity:1;
+}
+
+.thumb.preview img{
+  opacity:0;
+}
 
 /* BADGES */
 .badge{
