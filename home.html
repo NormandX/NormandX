@@ -57,7 +57,7 @@ if(!user) location.href="auth.html";
 
 function toggleMenu(){
   const m = document.getElementById("menu");
-  m.style.display = m.style.display==="block" ? "none" : "block";
+  m.style.display = m.style.display==="block"?"none":"block";
 }
 function logout(){
   localStorage.removeItem("connected");
@@ -99,22 +99,20 @@ function render(list){
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
 
-  const likes = JSON.parse(localStorage.getItem("likes_"+user) || "[]");
-  const favs  = JSON.parse(localStorage.getItem("fav_"+user) || "[]");
+  const likes = JSON.parse(localStorage.getItem("likes_"+user)||"[]");
+  const favs  = JSON.parse(localStorage.getItem("fav_"+user)||"[]");
 
   list.forEach(v=>{
     grid.innerHTML += `
     <div class="card"
-      onmouseenter="previewStart(this)"
+      onmouseenter="previewStart(this,'${v.v}')"
       onmouseleave="previewStop(this)"
       onclick="openVideo(${v.id})">
 
       <div class="thumb">
-        <img src="${v.poster}">
-        <video muted playsinline preload="metadata">
-          <source src="${v.v}" type="video/mp4">
-        </video>
-        ${v.hd ? '<span class="badge">HD</span>' : ''}
+        <img src="${v.poster}" onerror="this.src='https://via.placeholder.com/640x360/111/444?text=No+Preview'">
+        <video muted playsinline></video>
+        ${v.hd?'<span class="badge">HD</span>':''}
         <span class="duration">${v.d}</span>
       </div>
 
@@ -131,22 +129,25 @@ function render(list){
         <button class="fav ${favs.includes(v.id)?'active':''}"
           onclick="toggleFav(${v.id},this)">❤</button>
       </div>
-
     </div>`;
   });
 }
 
 render(allVideos);
 
-/* ===== PREVIEW STABLE ===== */
-function previewStart(card){
+/* ===== PREVIEW QUI MARCHE ===== */
+function previewStart(card,src){
   const video = card.querySelector("video");
   const img = card.querySelector("img");
 
-  img.style.display = "none";
-  video.style.display = "block";
+  if(!video.src){
+    video.src = src;
+    video.load();
+  }
 
-  video.currentTime = 0;
+  img.style.display="none";
+  video.style.display="block";
+  video.currentTime = 0.1;
   video.play().catch(()=>{});
 }
 
@@ -156,9 +157,11 @@ function previewStop(card){
 
   video.pause();
   video.currentTime = 0;
+  video.removeAttribute("src");
+  video.load();
 
-  video.style.display = "none";
-  img.style.display = "block";
+  video.style.display="none";
+  img.style.display="block";
 }
 
 /* ===== OPEN VIDEO ===== */
@@ -168,7 +171,7 @@ function openVideo(id){
   if(!v) return;
 
   v.views++;
-  localStorage.setItem("videos", JSON.stringify(vids));
+  localStorage.setItem("videos",JSON.stringify(vids));
   location.href="video.html?id="+id;
 }
 
@@ -180,16 +183,16 @@ function filter(c){
   render(allVideos.filter(v=>v.c===c));
 }
 
-/* ===== LIKE / FAVORI ===== */
+/* ===== LIKE / FAV ===== */
 function toggleLike(id,btn){
   let l = JSON.parse(localStorage.getItem("likes_"+user)||"[]");
-  l.includes(id) ? l=l.filter(x=>x!==id) : l.push(id);
+  l.includes(id)?l=l.filter(x=>x!==id):l.push(id);
   btn.classList.toggle("active");
   localStorage.setItem("likes_"+user,JSON.stringify(l));
 }
 function toggleFav(id,btn){
   let f = JSON.parse(localStorage.getItem("fav_"+user)||"[]");
-  f.includes(id) ? f=f.filter(x=>x!==id) : f.push(id);
+  f.includes(id)?f=f.filter(x=>x!==id):f.push(id);
   btn.classList.toggle("active");
   localStorage.setItem("fav_"+user,JSON.stringify(f));
 }
