@@ -54,9 +54,10 @@ if(!localStorage.getItem("connected")){
   location.href="auth.html";
 }
 
+/* ===== MENU ===== */
 function toggleMenu(){
-  const m = document.getElementById("menu");
-  m.style.display = m.style.display==="block" ? "none" : "block";
+  const m=document.getElementById("menu");
+  m.style.display = m.style.display==="block"?"none":"block";
 }
 function logout(){
   localStorage.removeItem("connected");
@@ -64,7 +65,7 @@ function logout(){
 }
 
 /* ===== DATA ===== */
-const videos = [
+const videos=[
  {
   id:1,
   t:"Carla Cute 1",
@@ -86,24 +87,27 @@ const videos = [
 ];
 
 /* ===== FAVORIS ===== */
-let favs = JSON.parse(localStorage.getItem("favs")||"[]");
+let favorites = JSON.parse(localStorage.getItem("favorites")||"[]");
 
 function toggleFav(e,id){
   e.stopPropagation();
-  favs.includes(id) ? favs=favs.filter(f=>f!==id) : favs.push(id);
-  localStorage.setItem("favs",JSON.stringify(favs));
-  updateFavs();
+  favorites.includes(id)
+    ? favorites=favorites.filter(f=>f!==id)
+    : favorites.push(id);
+
+  localStorage.setItem("favorites",JSON.stringify(favorites));
+  updateFavUI();
 }
 
-function updateFavs(){
-  document.querySelectorAll(".fav").forEach(b=>{
-    const id = +b.dataset.id;
-    b.classList.toggle("active",favs.includes(id));
+function updateFavUI(){
+  document.querySelectorAll(".fav-btn").forEach(b=>{
+    const id=+b.dataset.id;
+    b.classList.toggle("active",favorites.includes(id));
   });
 }
 
 /* ===== RENDER ===== */
-const grid = document.getElementById("grid");
+const grid=document.getElementById("grid");
 
 function render(list){
   grid.innerHTML="";
@@ -121,10 +125,15 @@ function render(list){
           <source src="${v.v}" type="video/mp4">
         </video>
         <span class="duration">${v.d}</span>
-        <button class="fav" data-id="${v.id}" onclick="toggleFav(event,${v.id})">❤</button>
+      </div>
+
+      <div class="fav-row">
+        <button class="fav-btn" data-id="${v.id}"
+          onclick="toggleFav(event,${v.id})">❤</button>
       </div>
 
       <p>${v.t}</p>
+
       <div class="meta">
         <span>${v.views} vues</span>
         <span>${v.c}</span>
@@ -132,7 +141,7 @@ function render(list){
     `;
     grid.appendChild(card);
   });
-  updateFavs();
+  updateFavUI();
 }
 
 render(videos);
