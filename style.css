@@ -27,11 +27,11 @@ header{
 .menu{
  display:none;position:absolute;
  right:16px;top:60px;
- background:#111;border-radius:8px;
+ background:#111;border-radius:12px;
+ min-width:160px;
 }
-.menu a{
- display:block;padding:10px 14px;
-}
+.menu a{display:block;padding:12px;color:#ccc}
+.menu a:hover{background:#1a1a1a;color:#ff9000}
 
 /* LAYOUT */
 .layout{display:flex}
@@ -57,63 +57,94 @@ main{flex:1;padding:20px}
  background:#111;
  border-radius:14px;
  overflow:hidden;
+ cursor:pointer;
+ transition:.2s;
 }
+.card:hover{transform:translateY(-6px)}
+
+/* THUMB */
 .thumb{
  position:relative;
+ width:100%;
  aspect-ratio:16/9;
+ background:#000;
+ overflow:hidden;
 }
+.thumb img,
 .thumb video{
+ position:absolute;
+ top:0;left:0;
  width:100%;height:100%;
  object-fit:cover;
- pointer-events:none;
 }
+.thumb video{
+ opacity:0;
+ pointer-events:none;
+ transition:.2s;
+}
+.thumb.preview video{opacity:1}
+.thumb.preview img{opacity:0}
+
+/* BADGES */
 .badge{
  position:absolute;top:8px;left:8px;
- background:#ff9000;color:#000;
- font-size:11px;padding:2px 6px;
- border-radius:4px;font-weight:bold;
+ background:#ff9000;
+ color:#000;
+ font-size:11px;
+ padding:2px 6px;
+ border-radius:4px;
+ font-weight:bold;
 }
 .duration{
- position:absolute;right:8px;bottom:22px;
+ position:absolute;
+ right:8px;bottom:22px;
  background:rgba(0,0,0,.75);
- padding:2px 6px;font-size:12px;
+ padding:2px 6px;
+ font-size:12px;
+ border-radius:4px;
 }
+
+/* PROGRESS */
 .progress{
- position:absolute;bottom:0;
+ position:absolute;
+ bottom:0;left:0;
  width:100%;height:4px;
  background:rgba(255,255,255,.2);
 }
 .progress div{
- height:100%;width:0;
+ width:0;height:100%;
  background:#ff9000;
 }
-.info{padding:8px 10px;cursor:pointer}
-.meta{display:flex;justify-content:space-between;font-size:12px;opacity:.7}
+
+/* TEXT */
+.card p{
+ margin:8px 10px 4px;
+ font-size:14px;font-weight:600
+}
+.meta{
+ display:flex;
+ justify-content:space-between;
+ font-size:12px;
+ opacity:.7;
+ margin:0 10px 6px
+}
+
+/* ACTIONS */
 .actions{
  display:flex;gap:10px;
- padding:6px 10px 10px;
+ padding:6px 10px 10px
 }
 .actions button{
  background:none;border:none;
- color:#ff9000;font-size:18px;
- cursor:pointer;
+ color:#666;font-size:18px;
+ cursor:pointer
 }
+.like.active{color:#ff3050}
+.fav.active{color:#ffb400}
 
-/* MOBILE ONLY */
+/* MOBILE */
 @media(max-width:900px){
- aside{
-  position:fixed;
-  bottom:0;left:0;right:0;
-  width:100%;height:60px;
-  display:flex;overflow-x:auto;
-  background:#111;z-index:20;
- }
- aside a{
-  flex:0 0 auto;
-  padding:18px;
-  white-space:nowrap;
- }
- main{padding-bottom:80px}
- .search{display:none}
- .grid{grid-template-columns:repeat(2,1fr)}
+ aside,.search{display:none}
+ header{justify-content:space-between}
+ .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
 }
