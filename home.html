@@ -2,94 +2,92 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NormandX</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- HEADER -->
 <header>
-  <div class="logo">
+  <div class="logo" onclick="location.href='home.html'">
     <span>Normand</span><span>X</span>
   </div>
 
-  <input class="search" type="text" placeholder="Rechercher...">
+  <input class="search" placeholder="Rechercher..." oninput="search(this.value)">
 
-  <img src="https://i.imgur.com/8Km9tLL.png" class="account" onclick="toggleMenu()">
-
-  <div class="menu" id="menu">
-    <a href="favoris.html">❤️ Favoris</a>
-    <a href="historique.html">🕒 Historique</a>
-    <a href="#" onclick="logout()">🚪 Déconnexion</a>
+  <div class="account" onclick="toggleMenu()">
+    <img src="account.png">
   </div>
 </header>
 
-<!-- LAYOUT -->
+<div class="menu" id="menu">
+  <a href="favorites.html">❤️ Favoris</a>
+  <a href="history.html">📁 Historique</a>
+  <a onclick="logout()">🚪 Déconnexion</a>
+</div>
+
 <div class="layout">
+<aside>
+  <a onclick="filter('Hetero')">Hétéro</a>
+  <a onclick="filter('MILF')">MILF</a>
+  <a onclick="filter('Teen')">Teen</a>
+  <a onclick="filter('Anal')">Anal</a>
+  <a onclick="filter('Lesbian')">Lesbian</a>
+  <a onclick="filter('Gays')">Gays</a>
+  <a onclick="filter('Amateur')">Amateur</a>
+  <a onclick="filter('Asian')">Asian</a>
+  <a onclick="filter('BBW')">BBW</a>
+  <a onclick="filter('Fetish')">Fetish</a>
+  <a onclick="filter('Hardcore')">Hardcore</a>
+  <a onclick="filter('Compilation')">Compilation</a>
+</aside>
 
-  <!-- CATEGORIES -->
-  <aside>
-    <a>Hétéro</a>
-    <a>MILF</a>
-    <a>Teen</a>
-    <a>Anal</a>
-    <a>Lesbian</a>
-    <a>Gays</a>
-    <a>Amateur</a>
-    <a>Asian</a>
-    <a>BBW</a>
-    <a>Fetish</a>
-    <a>Hardcore</a>
-    <a>Compilation</a>
-  </aside>
-
-  <!-- CONTENT -->
-  <main>
-    <div class="grid" id="grid"></div>
-  </main>
-
+<main>
+  <div class="grid" id="grid"></div>
+</main>
 </div>
 
 <script>
-/* ===== AUTH ===== */
-const user = localStorage.getItem("connected") || "guest";
-localStorage.setItem("connected", user);
+/* ===== USER SAFE ===== */
+let user = localStorage.getItem("connected");
+if(!user){
+  user = "guest";
+  localStorage.setItem("connected", user);
+}
 
 /* ===== MENU ===== */
 function toggleMenu(){
   const m = document.getElementById("menu");
   m.style.display = m.style.display === "block" ? "none" : "block";
 }
+document.addEventListener("click", e=>{
+  if(!e.target.closest(".account")) document.getElementById("menu").style.display="none";
+});
 function logout(){
   localStorage.removeItem("connected");
   location.reload();
 }
 
-/* ===== VIDEOS ===== */
+/* ===== DATA ===== */
 const videos = [
  {
   id:1,
   t:"Carla Cute 1",
   c:"Hetero",
-  poster:"https://via.placeholder.com/640x360/111/ffffff?text=Video+1",
+  poster:"https://via.placeholder.com/640x360/000000/ffffff?text=Preview",
   v:"https://ia601703.us.archive.org/22/items/video-1_20260114/Video1.mp4",
   d:"12:34",
-  views:0,
-  hd:true,
-  isNew:true
+  views:0
  },
  {
   id:2,
   t:"Ma cousine m'a fait perdre le NNN",
   c:"Hetero",
-  poster:"https://ic-nss.flixcdn.com/a/MzliYTZhMDJhMWU2ZjNkNjY4NGRmOGI3NTI1MjQ1Zjg/webp%2Cs%28w%3A704%2Ch%3A440%29/xc/7k/7k6BvI/frame/original/23.jpg",
+  poster:"https://via.placeholder.com/640x360/000000/ffffff?text=Preview",
   v:"https://ia601402.us.archive.org/0/items/xnxx-incroyable-blonde-bien-roulee-percee-par-filoufitt-360p/XNXX_incroyable_blonde_bien_roulee_percee_par_filoufitt_360p.mp4",
   d:"18:05",
-  views:0,
-  hd:true,
-  isNew:false
+  views:0
  }
 ];
 
@@ -98,35 +96,33 @@ localStorage.setItem("videos", JSON.stringify(videos));
 /* ===== FAVORIS ===== */
 let favorites = JSON.parse(localStorage.getItem("fav_"+user) || "[]");
 
-/* ===== RENDER ===== */
+/* ===== GRID ===== */
 const grid = document.getElementById("grid");
 
 function render(list){
-  grid.innerHTML = "";
-  list.forEach(v => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.onclick = () => {
+  grid.innerHTML="";
+  list.forEach(v=>{
+    const card=document.createElement("div");
+    card.className="card";
+    card.onclick=()=>{
       addHistory(v.id);
-      location.href = "video.html?id=" + v.id;
+      location.href="video.html?id="+v.id;
     };
 
-    card.innerHTML = `
+    card.innerHTML=`
       <div class="thumb"
         onmouseenter="previewStart(this)"
         onmouseleave="previewStop(this)">
         <img src="${v.poster}">
-        <video muted playsinline preload="metadata">
+        <video muted preload="metadata">
           <source src="${v.v}" type="video/mp4">
         </video>
-        ${v.hd ? '<span class="badge">HD</span>' : ''}
-        ${v.isNew ? '<span class="badge new">NEW</span>' : ''}
         <span class="duration">${v.d}</span>
       </div>
 
       <div class="fav-row">
-        <button class="fav-btn ${favorites.includes(v.id) ? 'active' : ''}"
-          onclick="toggleFav(event, ${v.id})">❤</button>
+        <button class="fav-btn ${favorites.includes(v.id)?"active":""}"
+          onclick="toggleFav(event,${v.id})">❤</button>
       </div>
 
       <p>${v.t}</p>
@@ -139,41 +135,46 @@ function render(list){
   });
 }
 
-function toggleFav(e, id){
+function toggleFav(e,id){
   e.stopPropagation();
   favorites.includes(id)
-    ? favorites = favorites.filter(x => x !== id)
+    ? favorites = favorites.filter(x=>x!==id)
     : favorites.push(id);
   localStorage.setItem("fav_"+user, JSON.stringify(favorites));
   render(videos);
 }
 
-/* ===== HISTORIQUE ===== */
 function addHistory(id){
   let h = JSON.parse(localStorage.getItem("history_"+user) || "[]");
-  h = h.filter(x => x !== id);
+  h = h.filter(x=>x!==id);
   h.unshift(id);
   localStorage.setItem("history_"+user, JSON.stringify(h));
 }
 
-/* ===== PREVIEW PC ===== */
+/* ===== PREVIEW ===== */
 function previewStart(el){
-  if(window.innerWidth < 900) return;
-  const v = el.querySelector("video");
-  const i = el.querySelector("img");
-  v.currentTime = 0.1;
-  v.oncanplay = () => {
-    i.style.opacity = 0;
-    v.style.opacity = 1;
-    v.play();
-  };
+  if(window.innerWidth<900) return;
+  const v=el.querySelector("video");
+  const i=el.querySelector("img");
+  v.currentTime=0.1;
+  v.play();
+  v.style.opacity=1;
+  i.style.opacity=0;
 }
 function previewStop(el){
-  const v = el.querySelector("video");
-  const i = el.querySelector("img");
+  const v=el.querySelector("video");
+  const i=el.querySelector("img");
   v.pause();
-  v.style.opacity = 0;
-  i.style.opacity = 1;
+  v.style.opacity=0;
+  i.style.opacity=1;
+}
+
+/* ===== SEARCH / FILTER ===== */
+function search(q){
+  render(videos.filter(v=>v.t.toLowerCase().includes(q.toLowerCase())));
+}
+function filter(c){
+  render(videos.filter(v=>v.c===c));
 }
 
 render(videos);
