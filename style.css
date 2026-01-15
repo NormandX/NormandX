@@ -151,22 +151,6 @@ main{flex:1;padding:20px}
  margin:0 10px 10px;
 }
 
-/* FIX MOBILE : boutons AU-DESSUS des vidéos */
-header,
-.menu {
-  position: sticky;
-  z-index: 1000;
-}
-
-/* Empêche la vidéo de passer au-dessus */
-.thumb video {
-  z-index: 1;
-}
-
-.thumb img {
-  z-index: 2;
-}
-
 /* MOBILE (sans casser PC) */
 @media(max-width:900px){
  aside{display:none}
