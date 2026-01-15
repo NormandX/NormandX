@@ -45,58 +45,44 @@
 </div>
 
 <script>
-/* ===== USER SAFE (PLUS DE BOUCLE) ===== */
-let user = localStorage.getItem("connected");
-if(!user){
- user="guest";
- localStorage.setItem("connected","guest");
-}
+/* USER */
+let user = localStorage.getItem("connected") || "guest";
+localStorage.setItem("connected", user);
 
-/* ===== VIDEOS ===== */
+/* VIDEOS */
 const videos=[
  {
-  id:1,
-  t:"Carla Cute 1",
-  c:"Hetero",
+  id:1,t:"Carla Cute 1",c:"Hetero",
   poster:"https://via.placeholder.com/640x360/111/fff?text=Video+1",
   v:"https://ia601703.us.archive.org/22/items/video-1_20260114/Video1.mp4",
-  d:"12:34",
-  hd:true,
-  isNew:true,
-  views:0
+  d:"12:34",hd:true,isNew:true,views:0
  },
  {
-  id:2,
-  t:"Ma cousine m'a fait perdre le NNN",
-  c:"Hetero",
+  id:2,t:"Ma cousine m'a fait perdre le NNN",c:"Hetero",
   poster:"https://ic-nss.flixcdn.com/a/MzliYTZhMDJhMWU2ZjNkNjY4NGRmOGI3NTI1MjQ1Zjg/webp%2Cs%28w%3A704%2Ch%3A440%29/xc/7k/7k6BvI/frame/original/23.jpg",
   v:"https://ia601402.us.archive.org/0/items/xnxx-incroyable-blonde-bien-roulee-percee-par-filoufitt-360p/XNXX_incroyable_blonde_bien_roulee_percee_par_filoufitt_360p.mp4",
-  d:"18:05",
-  hd:true,
-  isNew:false,
-  views:0
+  d:"18:05",hd:true,isNew:false,views:0
  }
 ];
 
-/* ===== FAVORIS ===== */
-let fav=JSON.parse(localStorage.getItem("fav_"+user)||"[]");
+/* FAVORIS */
+let fav = JSON.parse(localStorage.getItem("fav_"+user)||"[]");
 
 function toggleFav(e,id){
  e.stopPropagation();
- fav.includes(id)?fav=fav.filter(x=>x!==id):fav.push(id);
+ fav.includes(id) ? fav=fav.filter(x=>x!==id) : fav.push(id);
  localStorage.setItem("fav_"+user,JSON.stringify(fav));
  updateFavUI();
 }
 
 function updateFavUI(){
  document.querySelectorAll(".fav-btn").forEach(b=>{
-  b.classList.toggle("active",fav.includes(+b.dataset.id));
+  b.classList.toggle("active", fav.includes(+b.dataset.id));
  });
 }
 
-/* ===== RENDER ===== */
+/* RENDER */
 const grid=document.getElementById("grid");
-
 function render(list){
  grid.innerHTML="";
  list.forEach(v=>{
@@ -127,7 +113,7 @@ function render(list){
 }
 render(videos);
 
-/* ===== PREVIEW ===== */
+/* PREVIEW */
 function previewStart(el){
  const v=el.querySelector("video");
  const i=el.querySelector("img");
@@ -145,7 +131,7 @@ function previewStop(el){
  i.style.opacity=1;
 }
 
-/* ===== HISTORIQUE ===== */
+/* HISTORIQUE */
 function openVideo(id){
  let h=JSON.parse(localStorage.getItem("history_"+user)||"[]");
  h.unshift(id);
@@ -154,7 +140,7 @@ function openVideo(id){
  location.href="video.html?id="+id;
 }
 
-/* ===== SEARCH / FILTER ===== */
+/* SEARCH / FILTER */
 function search(q){render(videos.filter(v=>v.t.toLowerCase().includes(q.toLowerCase())))}
 function filter(c){render(videos.filter(v=>v.c===c))}
 </script>
