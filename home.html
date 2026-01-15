@@ -25,7 +25,20 @@
 </div>
 
 <div class="layout">
-<aside id="categories"></aside>
+<aside>
+  <a onclick="filter('Hetero')">Hétéro</a>
+  <a onclick="filter('MILF')">MILF</a>
+  <a onclick="filter('Teen')">Teen</a>
+  <a onclick="filter('Anal')">Anal</a>
+  <a onclick="filter('Lesbian')">Lesbian</a>
+  <a onclick="filter('Gays')">Gays</a>
+  <a onclick="filter('Amateur')">Amateur</a>
+  <a onclick="filter('Asian')">Asian</a>
+  <a onclick="filter('BBW')">BBW</a>
+  <a onclick="filter('Fetish')">Fetish</a>
+  <a onclick="filter('Hardcore')">Hardcore</a>
+  <a onclick="filter('Compilation')">Compilation</a>
+</aside>
 
 <main>
   <div class="grid" id="grid"></div>
@@ -36,11 +49,15 @@
 const user = localStorage.getItem("connected");
 if(!user) location.href="auth.html";
 
-const categories = [
- "Hetero","MILF","Teen","Anal","Lesbian","Gays",
- "Amateur","Asian","BBW","Fetish","Hardcore","Compilation","Vintage"
-];
+function toggleMenu(){
+  menu.style.display = menu.style.display==="block"?"none":"block";
+}
+function logout(){
+  localStorage.removeItem("connected");
+  location.href="auth.html";
+}
 
+/* ===== VIDEOS ===== */
 const videos = [
  {
   id:1,
@@ -54,108 +71,112 @@ const videos = [
  }
 ];
 
-const grid = document.getElementById("grid");
-const catBox = document.getElementById("categories");
+if(!localStorage.getItem("videos")){
+ localStorage.setItem("videos",JSON.stringify(videos));
+}
 
-categories.forEach(c=>{
- catBox.innerHTML+=`<a onclick="filter('${c}')">${c}</a>`;
-});
-
+/* ===== RENDER ===== */
 function render(list){
  grid.innerHTML="";
+ const likes = JSON.parse(localStorage.getItem("likes_"+user)||"[]");
+ const favs  = JSON.parse(localStorage.getItem("fav_"+user)||"[]");
+
  list.forEach(v=>{
   grid.innerHTML+=`
-  <div class="card">
-   <div class="thumb"
-    onmouseenter="previewStart(this)"
-    onmouseleave="previewStop(this)"
-    ontouchstart="mobilePreview(this)">
-    <video muted playsinline preload="metadata" poster="${v.poster}">
-     <source src="${v.v}" type="video/mp4">
-    </video>
-    ${v.hd?'<span class="badge">HD</span>':''}
-    <span class="duration">${v.d}</span>
-    <div class="progress"><div></div></div>
-   </div>
+  <div class="card" onclick="openVideo(${v.id})">
+    <div class="thumb"
+      onmouseenter="previewStart(this)"
+      onmouseleave="previewStop(this)"
+      ontouchstart="previewStart(this)"
+      ontouchend="previewStop(this)">
 
-   <div class="info" onclick="openVideo(${v.id})">
+      <img src="${v.poster}">
+      <video muted playsinline preload="metadata">
+        <source src="${v.v}" type="video/mp4">
+      </video>
+
+      ${v.hd?'<span class="badge">HD</span>':''}
+      <span class="duration">${v.d}</span>
+      <div class="progress"><div></div></div>
+    </div>
+
     <p>${v.t}</p>
     <div class="meta">
-     <span>${v.views} vues</span>
-     <span>${v.c}</span>
+      <span>${v.views} vues</span>
+      <span>${v.c}</span>
     </div>
-   </div>
 
-   <div class="actions">
-    <button onclick="like(${v.id},event)">👍</button>
-    <button onclick="fav(${v.id},event)">❤</button>
-   </div>
+    <div class="actions" onclick="event.stopPropagation()">
+      <button class="like ${likes.includes(v.id)?'active':''}"
+        onclick="like(${v.id},this)">👍</button>
+      <button class="fav ${favs.includes(v.id)?'active':''}"
+        onclick="fav(${v.id},this)">❤</button>
+    </div>
   </div>`;
  });
 }
+render(JSON.parse(localStorage.getItem("videos")));
 
-render(videos);
-
-/* PREVIEW */
+/* ===== PREVIEW ===== */
 let hoverTimer;
 function previewStart(el){
- const v=el.querySelector("video");
- const b=el.querySelector(".progress div");
- hoverTimer=setTimeout(()=>{
-  v.currentTime=0;v.play();
-  v.ontimeupdate=()=>b.style.width=(v.currentTime/v.duration*100)+"%";
+ const video = el.querySelector("video");
+ const bar = el.querySelector(".progress div");
+
+ el.classList.add("preview");
+ hoverTimer = setTimeout(()=>{
+  video.currentTime = 0;
+  video.play();
+  video.ontimeupdate=()=>{
+   bar.style.width=(video.currentTime/video.duration*100)+"%";
+  };
  },300);
 }
 function previewStop(el){
  clearTimeout(hoverTimer);
- const v=el.querySelector("video");
- v.pause();v.currentTime=0;
- el.querySelector(".progress div").style.width="0%";
+ const video = el.querySelector("video");
+ const bar = el.querySelector(".progress div");
+ el.classList.remove("preview");
+ video.pause();
+ video.currentTime=0;
+ bar.style.width="0%";
 }
 
-/* MOBILE LONG TAP */
-let mobileTimer;
-function mobilePreview(el){
- if(window.innerWidth>900) return;
- mobileTimer=setTimeout(()=>previewStart(el),400);
- document.addEventListener("touchend",()=>{
-  clearTimeout(mobileTimer);
-  previewStop(el);
- },{once:true});
-}
-
-/* ACTIONS */
+/* ===== VIDEO OPEN ===== */
 function openVideo(id){
- let h=JSON.parse(localStorage.getItem("history")||"[]");
- if(!h.includes(id)) h.push(id);
- localStorage.setItem("history",JSON.stringify(h));
+ let vids = JSON.parse(localStorage.getItem("videos"));
+ let v = vids.find(x=>x.id===id);
+ v.views++;
+ localStorage.setItem("videos",JSON.stringify(vids));
+
+ let h = JSON.parse(localStorage.getItem("history_"+user)||"[]");
+ h.unshift(id);
+ h=[...new Set(h)];
+ localStorage.setItem("history_"+user,JSON.stringify(h));
+
  location.href="video.html?id="+id;
 }
-function like(id,e){
- e.stopPropagation();
- let l=JSON.parse(localStorage.getItem("likes")||"[]");
- if(!l.includes(id)) l.push(id);
- localStorage.setItem("likes",JSON.stringify(l));
-}
-function fav(id,e){
- e.stopPropagation();
- let f=JSON.parse(localStorage.getItem("favorites")||"[]");
- if(!f.includes(id)) f.push(id);
- localStorage.setItem("favorites",JSON.stringify(f));
-}
 
+/* ===== SEARCH / FILTER ===== */
 function search(q){
  render(videos.filter(v=>v.t.toLowerCase().includes(q.toLowerCase())));
 }
 function filter(c){
  render(videos.filter(v=>v.c===c));
 }
-function toggleMenu(){
- menu.style.display=menu.style.display==="block"?"none":"block";
+
+/* ===== LIKE / FAV ===== */
+function like(id,btn){
+ let l=JSON.parse(localStorage.getItem("likes_"+user)||"[]");
+ l.includes(id)?l=l.filter(x=>x!==id):l.push(id);
+ btn.classList.toggle("active");
+ localStorage.setItem("likes_"+user,JSON.stringify(l));
 }
-function logout(){
- localStorage.clear();
- location.href="auth.html";
+function fav(id,btn){
+ let f=JSON.parse(localStorage.getItem("fav_"+user)||"[]");
+ f.includes(id)?f=f.filter(x=>x!==id):f.push(id);
+ btn.classList.toggle("active");
+ localStorage.setItem("fav_"+user,JSON.stringify(f));
 }
 </script>
 
