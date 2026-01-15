@@ -30,6 +30,7 @@ header{
  border-radius:50%;
  overflow:hidden;
  border:2px solid #ff9000;
+ cursor:pointer;
 }
 
 /* MENU */
@@ -41,7 +42,7 @@ header{
  background:#111;
  border-radius:12px;
  min-width:160px;
- z-index:1100;
+ z-index:2000; /* FIX IMPORTANT */
 }
 .menu a{
  display:block;
@@ -108,6 +109,26 @@ main{flex:1;padding:20px}
  transition:.2s;
 }
 .thumb video{opacity:0}
+
+/* BADGES */
+.badge{
+ position:absolute;
+ top:8px;
+ left:8px;
+ background:#ff9000;
+ color:#000;
+ font-size:11px;
+ padding:3px 6px;
+ border-radius:6px;
+ font-weight:bold;
+ z-index:2;
+}
+.badge.new{
+ left:auto;
+ right:8px;
+ background:#ff3050;
+ color:#fff;
+}
 
 /* DURATION */
 .duration{
