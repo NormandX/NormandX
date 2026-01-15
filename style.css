@@ -119,18 +119,23 @@ main{flex:1;padding:20px}
  font-size:12px;
 }
 
-/* FAVORIS */
-.fav{
- position:absolute;
- left:10px;
- bottom:10px;
+/* FAVORIS SOUS LA VIDÉO */
+.fav-row{
+ padding:6px 10px 0;
+}
+
+.fav-btn{
  background:none;
  border:none;
- font-size:20px;
+ font-size:22px;
  cursor:pointer;
  color:#777;
+ padding:0;
 }
-.fav.active{color:#ff4d6d}
+
+.fav-btn.active{
+ color:#ff4d6d;
+}
 
 /* TEXT */
 .card p{
