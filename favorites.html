@@ -3,35 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <title>Favoris</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <header>
- <div class="back" onclick="history.back()">← Retour</div>
+  <div class="back" onclick="history.back()">← Retour</div>
 </header>
 
 <main>
- <h1>Favoris</h1>
- <div class="grid" id="grid"></div>
+  <h1>Favoris</h1>
+  <div class="grid" id="grid"></div>
 </main>
 
 <script>
-const user=localStorage.getItem("connected");
-const fav=JSON.parse(localStorage.getItem("fav_"+user)||"[]");
-const videos=JSON.parse(localStorage.getItem("videos"));
+/* ===== USER ===== */
+const user = localStorage.getItem("connected") || "guest";
+localStorage.setItem("connected", user);
 
-grid.innerHTML="";
-fav.forEach(id=>{
- const v=videos.find(x=>x.id===id);
- grid.innerHTML+=`
- <div class="card" onclick="location.href='video.html?id=${id}'">
-  <div class="thumb">
-   <img src="${v.poster}">
-   <span class="duration">${v.d}</span>
-  </div>
-  <p>${v.t}</p>
- </div>`;
+/* ===== DATA ===== */
+const grid = document.getElementById("grid");
+const fav = JSON.parse(localStorage.getItem("fav_"+user) || "[]");
+const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+
+grid.innerHTML = "";
+
+if(fav.length === 0){
+  grid.innerHTML = "<p>Aucun favori.</p>";
+}
+
+fav.forEach(id => {
+  const v = videos.find(x => x.id === id);
+  if(!v) return;
+
+  grid.innerHTML += `
+    <div class="card" onclick="location.href='video.html?id=${v.id}'">
+      <div class="thumb">
+        <img src="${v.poster}">
+        <span class="duration">${v.d}</span>
+      </div>
+      <p>${v.t}</p>
+    </div>
+  `;
 });
 </script>
 
