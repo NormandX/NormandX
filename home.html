@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>NormandX</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,19 +16,18 @@
 
   <input class="search" placeholder="Rechercher..." oninput="search(this.value)">
 
-  <!-- BOUTON ROND -->
-  <div class="user-menu">
-    <div class="user-btn" onclick="toggleMenu()">☰</div>
-    <div class="dropdown" id="dropdown">
-      <div onclick="location.href='favorites.html'">❤ Favoris</div>
-      <div onclick="location.href='history.html'">🕒 Historique</div>
-      <div onclick="logout()">⎋ Déconnexion</div>
-    </div>
+  <div class="account" onclick="toggleMenu()">
+    <img src="account.png">
   </div>
 </header>
 
-<div class="layout">
+<div class="menu" id="menu">
+  <a href="favorites.html">❤️ Favoris</a>
+  <a href="history.html">📁 Historique</a>
+  <a onclick="logout()">🚪 Déconnexion</a>
+</div>
 
+<div class="layout">
 <aside>
   <a onclick="filter('Hetero')">Hétéro</a>
   <a onclick="filter('MILF')">MILF</a>
@@ -46,134 +46,141 @@
 <main>
   <div class="grid" id="grid"></div>
 </main>
-
 </div>
 
 <script>
-/* ===== USER ===== */
-let user = localStorage.getItem("connected");
-if(!user){
- user="guest";
- localStorage.setItem("connected","guest");
-}
+/* ===== AUTH ===== */
+const user = localStorage.getItem("connected");
+if(!user) location.href="auth.html";
 
 /* ===== MENU ===== */
 function toggleMenu(){
- document.getElementById("dropdown").classList.toggle("show");
+  const m=document.getElementById("menu");
+  m.style.display = m.style.display==="block"?"none":"block";
 }
-document.addEventListener("click",e=>{
- if(!e.target.closest(".user-menu"))
-  document.getElementById("dropdown").classList.remove("show");
-});
 function logout(){
- localStorage.removeItem("connected");
- location.reload();
+  localStorage.removeItem("connected");
+  location.href="auth.html";
 }
 
-/* ===== VIDEOS ===== */
+/* ===== DATA ===== */
 const videos=[
  {
   id:1,
   t:"Carla Cute 1",
   c:"Hetero",
-  poster:"https://via.placeholder.com/640x360/111/fff?text=Video+1",
+  poster:"thumbs/1.jpg",
   v:"https://ia601703.us.archive.org/22/items/video-1_20260114/Video1.mp4",
   d:"12:34",
-  hd:true,
-  isNew:true,
   views:0
  },
  {
   id:2,
   t:"Ma cousine m'a fait perdre le NNN",
   c:"Hetero",
-  poster:"https://via.placeholder.com/640x360/222/fff?text=Video+2",
+  poster:"thumbs/2.jpg",
   v:"https://ia601402.us.archive.org/0/items/xnxx-incroyable-blonde-bien-roulee-percee-par-filoufitt-360p/XNXX_incroyable_blonde_bien_roulee_percee_par_filoufitt_360p.mp4",
   d:"18:05",
-  hd:true,
-  isNew:false,
   views:0
  }
 ];
 
+localStorage.setItem("videos", JSON.stringify(videos));
+
 /* ===== FAVORIS ===== */
-let fav=JSON.parse(localStorage.getItem("fav_"+user)||"[]");
+let favorites = JSON.parse(localStorage.getItem("fav_"+user) || "[]");
 
 function toggleFav(e,id){
- e.stopPropagation();
- fav.includes(id)?fav=fav.filter(x=>x!==id):fav.push(id);
- localStorage.setItem("fav_"+user,JSON.stringify(fav));
- updateFavUI();
+  e.stopPropagation();
+  favorites.includes(id)
+    ? favorites = favorites.filter(f=>f!==id)
+    : favorites.push(id);
+  localStorage.setItem("fav_"+user, JSON.stringify(favorites));
+  updateFavUI();
 }
+
 function updateFavUI(){
- document.querySelectorAll(".fav-btn").forEach(b=>{
-  b.classList.toggle("active",fav.includes(+b.dataset.id));
- });
+  document.querySelectorAll(".fav-btn").forEach(b=>{
+    b.classList.toggle("active", favorites.includes(+b.dataset.id));
+  });
 }
 
 /* ===== RENDER ===== */
 const grid=document.getElementById("grid");
 
 function render(list){
- grid.innerHTML="";
- list.forEach(v=>{
-  const card=document.createElement("div");
-  card.className="card";
-  card.onclick=()=>openVideo(v.id);
-  card.innerHTML=`
-   <div class="thumb"
-    onmouseenter="previewStart(this)"
-    onmouseleave="previewStop(this)"
-    ontouchstart="previewStart(this)"
-    ontouchend="previewStop(this)">
-    <img src="${v.poster}">
-    <video muted playsinline data-src="${v.v}"></video>
-    ${v.hd?'<span class="badge">HD</span>':''}
-    ${v.isNew?'<span class="badge new">NEW</span>':''}
-    <span class="duration">${v.d}</span>
-   </div>
-   <div class="fav-row">
-    <button class="fav-btn" data-id="${v.id}" onclick="toggleFav(event,${v.id})">❤</button>
-   </div>
-   <p>${v.t}</p>
-   <div class="meta"><span>${v.views} vues</span><span>${v.c}</span></div>
-  `;
-  grid.appendChild(card);
- });
- updateFavUI();
+  grid.innerHTML="";
+  list.forEach(v=>{
+    const card=document.createElement("div");
+    card.className="card";
+    card.onclick=()=>{
+      addHistory(v.id);
+      location.href="video.html?id="+v.id;
+    };
+
+    card.innerHTML=`
+      <div class="thumb"
+        onmouseenter="previewStart(this)"
+        onmouseleave="previewStop(this)">
+        <img src="${v.poster}">
+        <video muted playsinline preload="metadata">
+          <source src="${v.v}" type="video/mp4">
+        </video>
+        <span class="duration">${v.d}</span>
+      </div>
+
+      <div class="fav-row">
+        <button class="fav-btn" data-id="${v.id}"
+          onclick="toggleFav(event,${v.id})">❤</button>
+      </div>
+
+      <p>${v.t}</p>
+      <div class="meta">
+        <span>${v.views} vues</span>
+        <span>${v.c}</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  updateFavUI();
 }
+
+function addHistory(id){
+  let h=JSON.parse(localStorage.getItem("history_"+user)||"[]");
+  h=h.filter(x=>x!==id);
+  h.unshift(id);
+  localStorage.setItem("history_"+user,JSON.stringify(h));
+}
+
 render(videos);
 
-/* ===== PREVIEW ===== */
+/* ===== PREVIEW PC ONLY ===== */
 function previewStart(el){
- const v=el.querySelector("video");
- const i=el.querySelector("img");
- if(!v.src) v.src=v.dataset.src;
- v.currentTime=0.1;
- v.play();
- v.style.opacity=1;
- i.style.opacity=0;
+  if(window.innerWidth<900) return;
+  const v=el.querySelector("video");
+  const i=el.querySelector("img");
+  v.currentTime=0.1;
+  v.oncanplay=()=>{
+    i.style.opacity=0;
+    v.style.opacity=1;
+    v.play();
+  };
 }
 function previewStop(el){
- const v=el.querySelector("video");
- const i=el.querySelector("img");
- v.pause();
- v.style.opacity=0;
- i.style.opacity=1;
-}
-
-/* ===== HISTORIQUE ===== */
-function openVideo(id){
- let h=JSON.parse(localStorage.getItem("history_"+user)||"[]");
- h.unshift(id);
- h=[...new Set(h)];
- localStorage.setItem("history_"+user,JSON.stringify(h));
- location.href="video.html?id="+id;
+  const v=el.querySelector("video");
+  const i=el.querySelector("img");
+  v.pause();
+  v.style.opacity=0;
+  i.style.opacity=1;
 }
 
 /* ===== SEARCH / FILTER ===== */
-function search(q){render(videos.filter(v=>v.t.toLowerCase().includes(q.toLowerCase())))}
-function filter(c){render(videos.filter(v=>v.c===c))}
+function search(q){
+  render(videos.filter(v=>v.t.toLowerCase().includes(q.toLowerCase())));
+}
+function filter(c){
+  render(videos.filter(v=>v.c===c));
+}
 </script>
 
 </body>
