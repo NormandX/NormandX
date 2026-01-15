@@ -151,6 +151,31 @@ main{flex:1;padding:20px}
  margin:0 10px 10px;
 }
 
+/* ===== FIX MOBILE UI / VIDEO ===== */
+@media (max-width:900px){
+
+  /* Empêche les vidéos de passer au-dessus de l'UI */
+  .thumb video{
+    pointer-events:none;
+  }
+
+  /* Assure que les cartes restent sous le header */
+  .card,
+  .thumb{
+    position:relative;
+    z-index:1;
+  }
+
+  /* Header et menu toujours au-dessus */
+  header{
+    z-index:1000;
+  }
+
+  .menu{
+    z-index:1100;
+  }
+}
+
 /* MOBILE (sans casser PC) */
 @media(max-width:900px){
  aside{display:none}
