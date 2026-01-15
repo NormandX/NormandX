@@ -12,7 +12,9 @@
   <div class="logo" onclick="location.href='home.html'">
     <span>Normand</span><span>X</span>
   </div>
+
   <input class="search" placeholder="Rechercher..." oninput="search(this.value)">
+
   <div class="account" onclick="toggleMenu()">
     <img src="account.png">
   </div>
@@ -48,18 +50,20 @@
 
 <script>
 /* ===== AUTH ===== */
-const user = localStorage.getItem("connected");
-if(!user) location.href="auth.html";
+if(!localStorage.getItem("connected")){
+  location.href="auth.html";
+}
 
 function toggleMenu(){
-  menu.style.display = menu.style.display==="block"?"none":"block";
+  const m = document.getElementById("menu");
+  m.style.display = m.style.display==="block" ? "none" : "block";
 }
 function logout(){
   localStorage.removeItem("connected");
   location.href="auth.html";
 }
 
-/* ===== VIDEOS ===== */
+/* ===== DATA ===== */
 const videos = [
  {
   id:1,
@@ -74,32 +78,50 @@ const videos = [
   id:2,
   t:"Ma cousine m'a fait perdre le NNN",
   c:"Hetero",
-  poster:"https://ic-nss.flixcdn.com/a/MzliYTZhMDJhMWU2ZjNkNjY4NGRmOGI3NTI1MjQ1Zjg/webp%2Cs%28w%3A704%2Ch%3A440%29/xc/7k/7k6BvI/frame/original/23.jpg",
-  v:"https://ia601402.us.archive.org/0/items/xnxx-incroyable-blonde-bien-roulee-percee-par-filoufitt-360p/XNXX_incroyable_blonde_bien_roulee-percee-par-filoufitt_360p.mp4",
+  poster:"thumbs/2.jpg",
+  v:"https://ia601402.us.archive.org/0/items/xnxx-incroyable-blonde-bien-roulee-percee-par-filoufitt-360p/XNXX_incroyable_blonde_bien_roulee_percee_par_filoufitt_360p.mp4",
   d:"18:05",
   views:0
  }
 ];
 
-const grid = document.getElementById("grid");
+/* ===== FAVORIS ===== */
+let favs = JSON.parse(localStorage.getItem("favs")||"[]");
+
+function toggleFav(e,id){
+  e.stopPropagation();
+  favs.includes(id) ? favs=favs.filter(f=>f!==id) : favs.push(id);
+  localStorage.setItem("favs",JSON.stringify(favs));
+  updateFavs();
+}
+
+function updateFavs(){
+  document.querySelectorAll(".fav").forEach(b=>{
+    const id = +b.dataset.id;
+    b.classList.toggle("active",favs.includes(id));
+  });
+}
 
 /* ===== RENDER ===== */
-function render(list){
-  grid.innerHTML = "";
+const grid = document.getElementById("grid");
 
+function render(list){
+  grid.innerHTML="";
   list.forEach(v=>{
-    grid.innerHTML += `
-    <div class="card" onclick="openVideo(${v.id})">
+    const card=document.createElement("div");
+    card.className="card";
+    card.onclick=()=>location.href="video.html?id="+v.id;
+
+    card.innerHTML=`
       <div class="thumb"
         onmouseenter="previewStart(this)"
         onmouseleave="previewStop(this)">
-
         <img src="${v.poster}">
         <video muted playsinline preload="metadata">
           <source src="${v.v}" type="video/mp4">
         </video>
-
         <span class="duration">${v.d}</span>
+        <button class="fav" data-id="${v.id}" onclick="toggleFav(event,${v.id})">❤</button>
       </div>
 
       <p>${v.t}</p>
@@ -107,31 +129,31 @@ function render(list){
         <span>${v.views} vues</span>
         <span>${v.c}</span>
       </div>
-    </div>
     `;
+    grid.appendChild(card);
   });
+  updateFavs();
 }
 
 render(videos);
 
-/* ===== PREVIEW (STABLE) ===== */
+/* ===== PREVIEW ===== */
 function previewStart(el){
-  const video = el.querySelector("video");
-  const img = el.querySelector("img");
-
-  video.currentTime = 0.1;
-  video.play();
-  video.style.opacity = "1";
-  img.style.opacity = "0";
+  const v=el.querySelector("video");
+  const i=el.querySelector("img");
+  v.currentTime=0.1;
+  v.oncanplay=()=>{
+    i.style.opacity=0;
+    v.style.opacity=1;
+    v.play();
+  };
 }
-
 function previewStop(el){
-  const video = el.querySelector("video");
-  const img = el.querySelector("img");
-
-  video.pause();
-  video.style.opacity = "0";
-  img.style.opacity = "1";
+  const v=el.querySelector("video");
+  const i=el.querySelector("img");
+  v.pause();
+  v.style.opacity=0;
+  i.style.opacity=1;
 }
 
 /* ===== SEARCH / FILTER ===== */
@@ -140,11 +162,6 @@ function search(q){
 }
 function filter(c){
   render(videos.filter(v=>v.c===c));
-}
-
-/* ===== OPEN VIDEO ===== */
-function openVideo(id){
-  location.href = "video.html?id="+id;
 }
 </script>
 
