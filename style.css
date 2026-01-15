@@ -5,9 +5,8 @@ body{
  color:#fff;
  font-family:Arial,Helvetica,sans-serif
 }
-a{text-decoration:none;color:inherit}
 
-/* ===== HEADER ===== */
+/* HEADER */
 header{
  display:flex;
  align-items:center;
@@ -16,13 +15,10 @@ header{
  background:#111;
  position:sticky;
  top:0;
- z-index:10;
+ z-index:100;
 }
-.logo{
- font-size:26px;
- font-weight:900;
- cursor:pointer
-}
+
+.logo{font-size:26px;font-weight:900}
 .logo span:first-child{color:red}
 .logo span:last-child{color:#ffb400}
 
@@ -36,10 +32,11 @@ header{
  color:#fff;
 }
 
-/* ===== HEADER ACTIONS ===== */
+/* ACTIONS */
 .actions{
  display:flex;
  gap:10px;
+ z-index:200;
 }
 .actions button{
  background:#222;
@@ -49,50 +46,44 @@ header{
  border-radius:10px;
  cursor:pointer;
 }
-.actions button:hover{background:#333}
 
-/* ===== LAYOUT ===== */
+/* LAYOUT */
 .layout{display:flex}
 aside{
  width:200px;
  background:#0d0d0d;
  padding:14px;
+ z-index:50;
 }
 aside a{
  display:block;
  padding:10px;
  border-radius:8px;
  color:#ccc;
- cursor:pointer;
  margin-bottom:6px;
+ cursor:pointer;
 }
-aside a:hover{
- background:#1a1a1a;
- color:#ff9000;
-}
+aside a:hover{background:#1a1a1a;color:#ff9000}
 main{flex:1;padding:20px}
 
-/* ===== GRID ===== */
+/* GRID */
 .grid{
  display:grid;
  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
  gap:16px;
 }
 
-/* ===== CARD ===== */
+/* CARD */
 .card{
  background:#111;
  border-radius:16px;
  overflow:hidden;
  cursor:pointer;
- transition:.2s;
 }
-.card:hover{transform:translateY(-6px)}
 
-/* ===== THUMB ===== */
+/* THUMB */
 .thumb{
  position:relative;
- width:100%;
  aspect-ratio:16/9;
  background:#000;
  overflow:hidden;
@@ -105,9 +96,12 @@ main{flex:1;padding:20px}
  height:100%;
  object-fit:cover;
 }
-.thumb video{opacity:0}
+.thumb video{
+ opacity:0;
+ pointer-events:none;
+}
 
-/* ===== BADGES ===== */
+/* BADGES */
 .badge{
  position:absolute;
  top:8px;
@@ -117,16 +111,15 @@ main{flex:1;padding:20px}
  font-size:11px;
  padding:3px 6px;
  border-radius:4px;
- font-weight:bold;
 }
 .badge.new{
- left:auto;
  right:8px;
+ left:auto;
  background:#ff3050;
  color:#fff;
 }
 
-/* ===== DURATION ===== */
+/* DURATION */
 .duration{
  position:absolute;
  right:10px;
@@ -137,44 +130,35 @@ main{flex:1;padding:20px}
  font-size:12px;
 }
 
-/* ===== FAVORI ===== */
+/* FAVORI */
 .fav-row{padding:6px 10px 0}
 .fav-btn{
  background:none;
  border:none;
  font-size:22px;
- cursor:pointer;
  color:#666;
 }
 .fav-btn.active{color:#ff3050}
 
-/* ===== TEXT ===== */
-.card p{
- margin:8px 10px 4px;
- font-size:14px;
- font-weight:600
-}
+/* TEXT */
+.card p{margin:8px 10px 4px;font-size:14px}
 .meta{
  display:flex;
  justify-content:space-between;
  font-size:12px;
  opacity:.7;
- margin:0 10px 10px
+ margin:0 10px 10px;
 }
 
-/* ===== MOBILE FIX ===== */
+/* MOBILE */
 @media(max-width:900px){
-
  .layout{flex-direction:column}
-
  aside{
   width:100%;
   display:flex;
-  flex-direction:row;
-  overflow-x:auto;
   gap:10px;
+  overflow-x:auto;
  }
-
  aside a{
   white-space:nowrap;
   background:#1a1a1a;
@@ -182,10 +166,8 @@ main{flex:1;padding:20px}
   border-radius:20px;
   font-size:13px;
  }
-
  .grid{
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr))
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
  }
-
  .search{display:none}
 }
