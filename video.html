@@ -2,218 +2,39 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Lecture vidéo</title>
+<title>Vidéo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="stylesheet" href="style.css">
-
-<style>
-body{
- background:#000;
- color:#fff;
- margin:0;
- font-family:Arial,Helvetica,sans-serif;
-}
-
-.topbar{
- display:flex;
- align-items:center;
- padding:10px;
- gap:10px;
-}
-
-.back{
- width:42px;
- height:42px;
- border-radius:50%;
- background:#111;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:20px;
- cursor:pointer;
-}
-
-.video-box{
- max-width:960px;
- margin:auto;
- position:relative;
-}
-
-video{
- width:100%;
- border-radius:12px;
- background:#000;
-}
-
-.meta{
- display:flex;
- justify-content:space-between;
- margin:10px 0;
-}
-
-.actions button{
- background:#111;
- border:none;
- color:#fff;
- padding:8px 14px;
- border-radius:20px;
- margin-right:8px;
- cursor:pointer;
-}
-.actions button.active{
- background:#ff9000;
- color:#000;
-}
-
-/* COMMENTS */
-.comments{
- max-width:960px;
- margin:20px auto;
-}
-.comments textarea{
- width:100%;
- min-height:80px;
- background:#111;
- color:#fff;
- border:1px solid #222;
- border-radius:8px;
- padding:10px;
-}
-.comments button{
- margin-top:8px;
- padding:8px 16px;
- border:none;
- border-radius:20px;
- background:#ff9000;
- cursor:pointer;
-}
-.comment{
- background:#111;
- padding:10px;
- margin-top:10px;
- border-radius:8px;
-}
-.comment strong{
- color:#ff9000;
- font-size:13px;
-}
-</style>
 </head>
-
 <body>
 
-<div class="topbar">
-  <div class="back" onclick="history.back()">←</div>
-  <h3 id="title"></h3>
-</div>
+<header>
+  <div class="logo" onclick="history.back()">← Retour</div>
+</header>
 
-<div class="video-box">
-  <video id="player" controls playsinline></video>
-
-  <div class="meta">
-    <span id="views"></span>
-    <div class="actions">
-      <button id="likeBtn">👍 Like</button>
-      <button id="favBtn">❤ Favori</button>
-    </div>
-  </div>
-</div>
-
-<div class="comments">
-  <h3>Commentaires</h3>
-
-  <textarea id="commentText" placeholder="Écrire un commentaire..."></textarea>
-  <button onclick="addComment()">Envoyer</button>
-
-  <div id="commentList"></div>
-</div>
+<main style="padding:20px;max-width:900px;margin:auto">
+  <video id="player" controls playsinline style="width:100%;border-radius:12px"></video>
+</main>
 
 <script>
-/* ===== USER ===== */
-const user = localStorage.getItem("connected");
+const user=localStorage.getItem("connected");
 if(!user) location.href="auth.html";
 
-/* ===== GET VIDEO ID ===== */
-const params = new URLSearchParams(location.search);
-const id = Number(params.get("id"));
+const id=Number(new URLSearchParams(location.search).get("id"));
+let videos=JSON.parse(localStorage.getItem("videos")||"[]");
+const v=videos.find(x=>x.id===id);
+if(!v) location.href="home.html";
 
-/* ===== LOAD VIDEO ===== */
-let videos = JSON.parse(localStorage.getItem("videos")||"[]");
-let video = videos.find(v=>v.id===id);
-if(!video) location.href="home.html";
+const player=document.getElementById("player");
+player.src=v.v;
+player.poster=v.poster;
 
-document.getElementById("title").innerText = video.t;
-document.getElementById("player").src = video.v;
-document.getElementById("views").innerText = video.views + " vues";
-
-/* ===== FULLSCREEN MOBILE ===== */
-const player = document.getElementById("player");
-player.addEventListener("dblclick", ()=>{
-  if(player.requestFullscreen) player.requestFullscreen();
+/* plein écran mobile */
+player.addEventListener("play",()=>{
+ if(window.innerWidth<900 && player.requestFullscreen){
+  player.requestFullscreen();
+ }
 });
-
-/* ===== LIKE / FAVORI ===== */
-const likeBtn = document.getElementById("likeBtn");
-const favBtn  = document.getElementById("favBtn");
-
-let likes = JSON.parse(localStorage.getItem("likes_"+user)||"[]");
-let favs  = JSON.parse(localStorage.getItem("fav_"+user)||"[]");
-
-if(likes.includes(id)) likeBtn.classList.add("active");
-if(favs.includes(id)) favBtn.classList.add("active");
-
-likeBtn.onclick = ()=>{
-  likes.includes(id)
-   ? likes = likes.filter(x=>x!==id)
-   : likes.push(id);
-
-  likeBtn.classList.toggle("active");
-  localStorage.setItem("likes_"+user, JSON.stringify(likes));
-};
-
-favBtn.onclick = ()=>{
-  favs.includes(id)
-   ? favs = favs.filter(x=>x!==id)
-   : favs.push(id);
-
-  favBtn.classList.toggle("active");
-  localStorage.setItem("fav_"+user, JSON.stringify(favs));
-};
-
-/* ===== COMMENTS ===== */
-const commentKey = "comments_"+id;
-
-function loadComments(){
-  const list = JSON.parse(localStorage.getItem(commentKey)||"[]");
-  const box = document.getElementById("commentList");
-  box.innerHTML="";
-  list.forEach(c=>{
-    box.innerHTML += `
-      <div class="comment">
-        <strong>${c.user}</strong>
-        <p>${c.text}</p>
-      </div>`;
-  });
-}
-
-function addComment(){
-  const txt = document.getElementById("commentText");
-  if(!txt.value.trim()) return;
-
-  const list = JSON.parse(localStorage.getItem(commentKey)||"[]");
-  list.unshift({
-    user,
-    text: txt.value,
-    date: Date.now()
-  });
-
-  localStorage.setItem(commentKey, JSON.stringify(list));
-  txt.value="";
-  loadComments();
-}
-
-loadComments();
 </script>
 
 </body>
